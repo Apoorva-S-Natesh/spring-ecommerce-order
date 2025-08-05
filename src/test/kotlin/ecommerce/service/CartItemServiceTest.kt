@@ -2,7 +2,12 @@ package ecommerce.service
 
 import ecommerce.dto.cart.AddToCartRequest
 import ecommerce.exception.NotFoundException
-import ecommerce.model.*
+import ecommerce.model.Cart
+import ecommerce.model.CartItem
+import ecommerce.model.Member
+import ecommerce.model.Product
+import ecommerce.model.ProductOption
+import ecommerce.model.Role
 import ecommerce.repository.CartItemRepository
 import ecommerce.repository.CartRepository
 import ecommerce.repository.ProductOptionRepository
@@ -12,10 +17,12 @@ import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mock
-import org.mockito.Mockito.*
+import org.mockito.Mockito.any
+import org.mockito.Mockito.verify
+import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
 import java.time.LocalDateTime
-import java.util.*
+import java.util.Optional
 
 class CartItemServiceTest {
     @Mock

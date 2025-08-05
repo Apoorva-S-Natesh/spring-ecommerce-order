@@ -4,7 +4,11 @@ import ecommerce.dto.cart.AddToCartRequest
 import ecommerce.exception.NotFoundException
 import ecommerce.model.Cart
 import ecommerce.model.CartItem
-import ecommerce.repository.*
+import ecommerce.repository.CartItemRepository
+import ecommerce.repository.CartRepository
+import ecommerce.repository.MemberRepository
+import ecommerce.repository.ProductOptionRepository
+import ecommerce.repository.ProductRepository
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -19,7 +23,7 @@ class CartService(
     private val memberRepository: MemberRepository,
 ) {
     fun getCartByUserId(userId: Long): Cart {
-        return cartRepository.findByMember_Id(userId)
+        return cartRepository.findByMemberId(userId)
             ?: throw NotFoundException("Cart not found for user $userId")
     }
 
@@ -27,7 +31,7 @@ class CartService(
         cartId: Long,
         userId: Long,
     ): Cart {
-        return cartRepository.findByIdAndMember_Id(cartId, userId)
+        return cartRepository.findByIdAndMemberId(cartId, userId)
             ?: throw NotFoundException("Cart not found or access denied")
     }
 
@@ -35,7 +39,7 @@ class CartService(
         cartId: Long,
         userId: Long,
     ): List<CartItem> {
-        cartRepository.findByIdAndMember_Id(cartId, userId)
+        cartRepository.findByIdAndMemberId(cartId, userId)
             ?: throw NotFoundException("Cart requested not found")
         return cartItemRepository.findByCartId(cartId)
     }
@@ -47,7 +51,7 @@ class CartService(
     ): Cart {
         productOptionRepository.findById(request.productOptionId).getOrNull()
             ?: throw NotFoundException("Product option not found")
-        val existingCart = cartRepository.findByMember_IdAndCartItemProductOptionId(userId, request.productOptionId)
+        val existingCart = cartRepository.findByMemberIdAndCartItemProductOptionId(userId, request.productOptionId)
         return if (existingCart != null) {
             val updatedCart =
                 Cart(
@@ -75,7 +79,7 @@ class CartService(
 
     @Transactional
     fun clearCart(userId: Long) {
-        cartRepository.deleteByMember_Id(userId)
+        cartRepository.deleteByMemberId(userId)
     }
 
     @Transactional
@@ -88,7 +92,7 @@ class CartService(
             ?: throw NotFoundException("Product option not found")
 
         val existingCart =
-            cartRepository.findByMember_IdAndCartItemProductOptionId(userId, productOptionId)
+            cartRepository.findByMemberIdAndCartItemProductOptionId(userId, productOptionId)
                 ?: throw NotFoundException("Item not found in cart")
 
         val updatedCart =

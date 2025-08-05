@@ -33,13 +33,14 @@ class CartApiE2ETest {
 
     @Test
     fun getCartItems_authenticatedUser_shouldReturnItems() {
-        val testUser = Member(
-            email = "test@example.com", 
-            password = "password", 
-            name = "Test User", 
-            role = Role.USER,
-            id = 1L
-        )
+        val testUser =
+            Member(
+                email = "test@example.com",
+                password = "password",
+                name = "Test User",
+                role = Role.USER,
+                id = 1L,
+            )
         val token = tokenService.generateToken(testUser)
 
         try {

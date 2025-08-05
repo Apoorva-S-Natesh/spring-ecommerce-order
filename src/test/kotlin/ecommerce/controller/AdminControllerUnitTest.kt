@@ -8,7 +8,9 @@ import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mock
-import org.mockito.Mockito.*
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
+import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
@@ -57,7 +59,7 @@ class AdminControllerUnitTest {
         val products =
             listOf(
                 Product("Product 1", 50.0, 5, "https://example.com/image1.jpg", id = 1L),
-                Product("Product 2", 75.0, 3, "https://example.com/image2.jpg", id = 2L)
+                Product("Product 2", 75.0, 3, "https://example.com/image2.jpg", id = 2L),
             )
         val page = PageImpl(products, PageRequest.of(0, 10), 2)
 

@@ -12,7 +12,7 @@ class ProductOptionTest {
             name = "TestProduct",
             price = 10.0,
             quantity = 5,
-            imageUrl = "https://example.com/image.jpg"
+            imageUrl = "https://example.com/image.jpg",
         )
 
     @Test

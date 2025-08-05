@@ -14,7 +14,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.web.servlet.*
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.delete
+import org.springframework.test.web.servlet.get
+import org.springframework.test.web.servlet.post
+import org.springframework.test.web.servlet.put
 import org.springframework.transaction.annotation.Transactional
 
 @SpringBootTest
@@ -51,7 +55,7 @@ class AdminControllerTest {
                 name = "New Product",
                 price = 99.99,
                 quantity = 10,
-                imageUrl = "https://example.com"
+                imageUrl = "https://example.com",
             )
 
         val createdProductResponse =
@@ -114,7 +118,7 @@ class AdminControllerTest {
                 name = "New Product",
                 price = 149.99,
                 quantity = 5,
-                imageUrl = "https://example.com"
+                imageUrl = "https://example.com",
             )
 
         mockMvc.post("/api/admin/products") {
@@ -162,7 +166,7 @@ class AdminControllerTest {
                 name = "OriginalProduct",
                 price = 99.99,
                 quantity = 10,
-                imageUrl = "https://"
+                imageUrl = "https://",
             )
 
         val createdProductResponse =
@@ -183,7 +187,7 @@ class AdminControllerTest {
                 name = "Updated Product",
                 price = 199.99,
                 quantity = 20,
-                imageUrl = "https://example.com"
+                imageUrl = "https://example.com",
             )
 
         mockMvc.put("/api/admin/products/$productId") {
@@ -207,7 +211,7 @@ class AdminControllerTest {
                 name = "DeleteProduct",
                 price = 99.99,
                 quantity = 10,
-                imageUrl = "https://example.com"
+                imageUrl = "https://example.com",
             )
 
         val createdProductResponse =
@@ -245,7 +249,7 @@ class AdminControllerTest {
                 name = "ProductOptions",
                 price = 99.99,
                 quantity = 10,
-                imageUrl = "https://example.com"
+                imageUrl = "https://example.com",
             )
 
         val createdProductResponse =
@@ -296,7 +300,7 @@ class AdminControllerTest {
                 name = "Test Product2",
                 price = 99.99,
                 quantity = 10,
-                imageUrl = "https://example.com"
+                imageUrl = "https://example.com",
             )
 
         val createdProductResponse =
@@ -405,7 +409,7 @@ class AdminControllerTest {
                 name = "OptionUpdate",
                 price = 99.99,
                 quantity = 10,
-                imageUrl = "https://example.com"
+                imageUrl = "https://example.com",
             )
 
         val createdProductResponse =

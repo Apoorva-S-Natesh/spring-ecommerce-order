@@ -5,8 +5,12 @@ import ecommerce.model.Cart
 import ecommerce.model.Member
 import ecommerce.model.Product
 import ecommerce.model.ProductOption
-import ecommerce.repository.*
-import org.junit.jupiter.api.Assertions.*
+import ecommerce.repository.CartItemRepository
+import ecommerce.repository.CartRepository
+import ecommerce.repository.MemberRepository
+import ecommerce.repository.ProductOptionRepository
+import ecommerce.repository.ProductRepository
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -61,15 +65,15 @@ class CartItemServiceIntegrationTest {
 
         val result = cartItemService.saveCartItem(request, testCart.id!!)
 
-        assertNotNull(result)
-        assertNotNull(result.id)
-        assertEquals(testCart.id, result.cart.id)
-        assertEquals(testProductOption.id, result.productOption.id)
-        assertEquals(4, result.quantity)
+        assertThat(result).isNotNull()
+        assertThat(result.id).isNotNull()
+        assertThat(result.cart.id).isEqualTo(testCart.id)
+        assertThat(result.productOption.id).isEqualTo(testProductOption.id)
+        assertThat(result.quantity).isEqualTo(4)
 
         val savedItem = cartItemRepository.findById(result.id!!).orElse(null)
-        assertNotNull(savedItem)
-        assertEquals(4, savedItem.quantity)
+        assertThat(savedItem).isNotNull()
+        assertThat(savedItem.quantity).isEqualTo(4)
     }
 
     @Test
@@ -92,11 +96,11 @@ class CartItemServiceIntegrationTest {
             )
         val result = cartItemService.saveCartItem(updateRequest, testCart.id!!)
 
-        assertEquals(6, result.quantity)
+        assertThat(result.quantity).isEqualTo(6)
 
         val cartItems = cartItemRepository.findByCartId(testCart.id!!)
-        assertEquals(1, cartItems.size)
-        assertEquals(6, cartItems[0].quantity)
+        assertThat(cartItems.size).isEqualTo(1)
+        assertThat(cartItems[0].quantity).isEqualTo(6)
     }
 
     @Test
@@ -113,7 +117,7 @@ class CartItemServiceIntegrationTest {
         cartItemService.deleteCartItemById(createdItem.id!!, testCart.id!!)
 
         val deletedItem = cartItemRepository.findById(createdItem.id!!).orElse(null)
-        assertNull(deletedItem)
+        assertThat(deletedItem).isNull()
     }
 
     @Test
@@ -128,11 +132,11 @@ class CartItemServiceIntegrationTest {
         cartItemService.saveCartItem(request, testCart.id!!)
 
         val itemsBefore = cartItemRepository.findByCartId(testCart.id!!)
-        assertEquals(2, itemsBefore.size)
+        assertThat(itemsBefore.size).isEqualTo(2)
 
         cartItemService.deleteAllCartItemsByCartId(testCart.id!!)
 
         val itemsAfter = cartItemRepository.findByCartId(testCart.id!!)
-        assertEquals(0, itemsAfter.size)
+        assertThat(itemsAfter.size).isEqualTo(0)
     }
 }
