@@ -1,93 +1,35 @@
 package ecommerce.repository
 
 import ecommerce.model.Cart
-import org.springframework.jdbc.core.JdbcTemplate
-import org.springframework.jdbc.core.RowMapper
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
-import java.sql.Timestamp
-import java.time.LocalDateTime
 
 @Repository
-class CartRepository(private val jdbc: JdbcTemplate) {
-    private val cartRowMapper =
-        RowMapper<Cart> { rs, _ ->
-            Cart(
-                id = rs.getLong("id"),
-                memberId = rs.getLong("member_id"),
-                productId = rs.getLong("product_id"),
-                quantity = rs.getInt("quantity"),
-                addedAt = rs.getTimestamp("added_at")?.toLocalDateTime(),
-            )
-        }
+interface CartRepository : JpaRepository<Cart, Long> {
+    @Query("SELECT c FROM Cart c WHERE c.member.id = :memberId")
+    fun findByMember_Id(memberId: Long): Cart?
 
-    fun save(cart: Cart): Cart {
-        val sql =
-            """
-            INSERT INTO cart (member_id, product_id, quantity, added_at)
-            VALUES (?, ?, ?, ?)
-            """.trimIndent()
+    @Query("SELECT c FROM Cart c WHERE c.id = :cartId AND c.member.id = :memberId")
+    fun findByIdAndMember_Id(
+        cartId: Long,
+        memberId: Long,
+    ): Cart?
 
-        val addedAt = cart.addedAt ?: LocalDateTime.now()
+    @Query("SELECT c FROM Cart c JOIN c.cartItem ci WHERE c.member.id = :memberId AND ci.productOption.id = :productOptionId")
+    fun findByMember_IdAndCartItemProductOptionId(
+        memberId: Long,
+        productOptionId: Long,
+    ): Cart?
 
-        jdbc.update(
-            sql,
-            cart.memberId,
-            cart.productId,
-            cart.quantity,
-            Timestamp.valueOf(addedAt),
-        )
-        return cart.copy(addedAt = addedAt)
-    }
+    @Query(
+        "DELETE FROM Cart c WHERE c.member.id = :memberId AND EXISTS (SELECT ci FROM CartItem ci WHERE ci.cart = c AND ci.productOption.id = :productOptionId)",
+    )
+    fun deleteByMember_IdAndCartItemProductOptionId(
+        memberId: Long,
+        productOptionId: Long,
+    )
 
-    fun findByUserId(userId: Long): List<Cart> {
-        val sql = "SELECT * FROM cart WHERE member_id = ?"
-        return jdbc.query(sql, cartRowMapper, userId)
-    }
-
-    fun findByUserIdAndProductId(
-        userId: Long,
-        productId: Long,
-    ): Cart? {
-        val sql = "SELECT * FROM cart WHERE member_id = ? AND product_id = ?"
-        val results = jdbc.query(sql, cartRowMapper, userId, productId)
-        return results.firstOrNull()
-    }
-
-    fun update(cart: Cart): Cart {
-        val sql =
-            """
-            UPDATE cart 
-            SET quantity = ?, added_at = ?
-            WHERE member_id = ? AND product_id = ?
-            """.trimIndent()
-
-        val addedAt = cart.addedAt ?: LocalDateTime.now()
-
-        jdbc.update(
-            sql,
-            cart.quantity,
-            Timestamp.valueOf(addedAt),
-            cart.memberId,
-            cart.productId,
-        )
-        return cart.copy(addedAt = addedAt)
-    }
-
-    fun deleteByUserIdAndProductId(
-        userId: Long,
-        productId: Long,
-    ) {
-        val sql = "DELETE FROM cart WHERE member_id = ? AND product_id = ?"
-        jdbc.update(sql, userId, productId)
-    }
-
-    fun deleteByUserId(userId: Long) {
-        val sql = "DELETE FROM cart WHERE member_id = ?"
-        jdbc.update(sql, userId)
-    }
-
-    fun findAll(): List<Cart> {
-        val sql = "SELECT * FROM cart"
-        return jdbc.query(sql, cartRowMapper)
-    }
+    @Query("DELETE FROM Cart c WHERE c.member.id = :memberId")
+    fun deleteByMember_Id(memberId: Long)
 }

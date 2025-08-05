@@ -1,62 +1,40 @@
 package ecommerce.controller
 
 import ecommerce.dto.auth.AuthenticatedUser
-import ecommerce.dto.cart.AddToCartRequest
-import ecommerce.dto.cart.UpdateQuantityRequest
 import ecommerce.model.Cart
+import ecommerce.model.CartItem
+import ecommerce.service.CartItemService
 import ecommerce.service.CartService
-import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
-import java.net.URI
+import org.springframework.web.bind.annotation.*
 
-@RequestMapping("/api")
+@RequestMapping("/api/carts")
 @RestController
 class CartController(
     private val cartService: CartService,
+    private val cartItemService: CartItemService,
 ) {
-    @GetMapping("/cart-items")
-    fun getCartItems(user: AuthenticatedUser): List<Cart> {
-        return cartService.getCartItems(user.userId)
-    }
-
-    @PostMapping("/cart-items")
-    fun addToCart(
-        @Valid @RequestBody addToCartRequest: AddToCartRequest,
-        user: AuthenticatedUser,
-    ): ResponseEntity<Cart> {
-        val cart = cartService.addToCart(user.userId, addToCartRequest)
-        return ResponseEntity.created(URI.create("/api/cart-items")).body(cart)
-    }
-
-    @PutMapping("/cart-items/{productId}")
-    fun updateQuantity(
-        @PathVariable productId: Long,
-        @Valid @RequestBody updateRequest: UpdateQuantityRequest,
-        user: AuthenticatedUser,
+    @GetMapping("/{userId}")
+    fun getCart(
+        @PathVariable userId: Long,
     ): Cart {
-        return cartService.updateQuantity(user.userId, productId, updateRequest)
+        return cartService.getCartByUserId(userId)
     }
 
-    @DeleteMapping("/cart-items/{productId}")
-    fun removeFromCart(
-        @PathVariable productId: Long,
+    @GetMapping("/{cartId}/items")
+    fun getAllCartItemsOfCart(
+        @PathVariable cartId: Long,
+        user: AuthenticatedUser,
+    ): List<CartItem> {
+        return cartService.getCartItemsOfCartByCartId(cartId, user.userId)
+    }
+
+    @DeleteMapping("/{cartId}")
+    fun deleteCart(
+        @PathVariable cartId: Long,
         user: AuthenticatedUser,
     ): ResponseEntity<Unit> {
-        cartService.removeFromCart(user.userId, productId)
-        return ResponseEntity.noContent().build()
-    }
-
-    @DeleteMapping("/cart-items")
-    fun clearCart(user: AuthenticatedUser): ResponseEntity<Unit> {
-        cartService.clearCart(user.userId)
+        cartItemService.deleteAllCartItemsByCartId(cartId)
         return ResponseEntity.noContent().build()
     }
 }
