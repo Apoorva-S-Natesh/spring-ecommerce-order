@@ -16,6 +16,7 @@ class WebMvcConfig(
         registry.addInterceptor(authInterceptor)
             .addPathPatterns("/api/cart/**")
             .addPathPatterns("/api/cart-items/**")
+            .addPathPatterns("/api/admin/**")
             .addPathPatterns("/admin/**")
     }
 

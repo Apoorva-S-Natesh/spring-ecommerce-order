@@ -59,9 +59,9 @@ class AuthInterceptor(private val tokenService: TokenService) : HandlerIntercept
         val authenticatedUser =
             AuthenticatedUser(
                 userId = userId,
-                role = claims["role"] as? String,
-                email = claims["email"] as? String,
-                name = claims["name"] as? String,
+                role = Role.valueOf(claims["role"] as? String ?: "USER"),
+                email = claims["email"] as? String ?: "",
+                name = claims["name"] as? String ?: "",
             )
         request.setAttribute(AUTHENTICATED_USER_ATTRIBUTE, authenticatedUser)
     }
@@ -80,6 +80,6 @@ class AuthInterceptor(private val tokenService: TokenService) : HandlerIntercept
         const val AUTH_HEADER = "Authorization"
         private const val BEARER_PREFIX = "Bearer "
         private const val ADMIN_PATH = "/admin"
-        private const val ADMIN_PATH_PREFIX = "$ADMIN_PATH/"
+        private const val ADMIN_PATH_PREFIX = "/api/admin/"
     }
 }

@@ -1,9 +1,19 @@
 package ecommerce.service
 
 import ecommerce.dto.member.RegisterRequest
+import ecommerce.dto.member.UpdateRequest
 import ecommerce.exception.AuthenticationException
+import ecommerce.exception.NotFoundException
+import ecommerce.model.Cart
 import ecommerce.model.Member
+import ecommerce.repository.CartRepository
 import ecommerce.repository.MemberRepository
+import ecommerce.util.toModel
+import jakarta.transaction.Transactional
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 @Service
@@ -11,19 +21,18 @@ class MemberService(
     private val memberRepository: MemberRepository,
     private val passwordService: PasswordService,
     private val tokenService: TokenService,
+    private val cartRepository: CartRepository,
 ) {
+    @Transactional
     fun register(request: RegisterRequest): String {
         if (memberRepository.existsByEmail(request.email)) {
             throw IllegalArgumentException("Email already exists")
         }
         val hashedPassword = passwordService.hashPassword(request.password)
-        val member =
-            Member(
-                email = request.email,
-                password = hashedPassword,
-                name = request.name,
-                role = request.role,
-            )
+        val member = request.toModel(0L, hashedPassword)
+
+        member.cart = cartRepository.save(Cart())
+
         val savedMember = memberRepository.save(member)
         return tokenService.generateToken(savedMember)
     }
@@ -41,5 +50,44 @@ class MemberService(
         }
 
         return tokenService.generateToken(member)
+    }
+
+    fun getMemberById(id: Long): Member {
+        return memberRepository.findByIdOrNull(id)
+            ?: throw NotFoundException("Member with id $id not found")
+    }
+
+    fun updateMemberById(
+        id: Long,
+        updateRequest: UpdateRequest,
+    ) {
+        val existingMember =
+            memberRepository.findByIdOrNull(id)
+                ?: throw NotFoundException("Member with id $id not found")
+        val memberToUpdate =
+            Member(
+                email = updateRequest.email,
+                password = existingMember.password,
+                name = updateRequest.name,
+                role = existingMember.role,
+                cart = existingMember.cart,
+                id = existingMember.id,
+            )
+        memberRepository.save(memberToUpdate)
+    }
+
+    fun deleteMemberById(id: Long) {
+        memberRepository.findByIdOrNull(id)
+            ?: throw NotFoundException("Member with id $id not found")
+        memberRepository.deleteById(id)
+    }
+
+    fun getAllMembers(
+        page: Int,
+        size: Int,
+        sortBy: String,
+    ): Page<Member> {
+        val pageable = PageRequest.of(page, size, Sort.by(sortBy))
+        return memberRepository.findAll(pageable)
     }
 }

@@ -1,9 +1,36 @@
 package ecommerce.model
 
-data class Member(
-    val id: Long? = null,
+import jakarta.persistence.*
+
+@Entity
+@Table(name = "members")
+class Member(
+    @Column(name = "email", nullable = false, unique = true)
     val email: String,
+    @Column(name = "password", nullable = false)
     val password: String,
+    @Column(name = "name", nullable = false)
     val name: String,
+    @Column(name = "role", nullable = false)
+    @Enumerated(EnumType.STRING)
     val role: Role = Role.USER,
-)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cart_id", nullable = true)
+    var cart: Cart? = null,
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long? = null,
+) {
+    constructor(
+        email: String,
+        name: String,
+    ) : this(
+        email = email,
+        password = "",
+        name = name,
+    )
+
+    override fun toString(): String {
+        return "Member(id=$id, email=$email, name=$name, role=$role, cart=$cart)"
+    }
+}
