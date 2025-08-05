@@ -1,5 +1,8 @@
 package ecommerce.endtoend
 
+import ecommerce.model.Member
+import ecommerce.model.Role
+import ecommerce.service.TokenService
 import io.restassured.RestAssured
 import io.restassured.http.ContentType
 import org.assertj.core.api.Assertions.assertThat
@@ -26,22 +29,36 @@ class ProductApiE2ETest {
     @Autowired
     private lateinit var jdbcTemplate: JdbcTemplate
 
+    @Autowired
+    private lateinit var tokenService: TokenService
+
+    private lateinit var adminToken: String
+
     private fun getBaseUrl() = "http://localhost:$port/api"
 
     @BeforeEach
     fun setUp() {
+        val adminUser = Member(
+            email = "admin@example.com", 
+            password = "password", 
+            name = "Admin User", 
+            role = Role.ADMIN,
+            id = 2L
+        )
+        adminToken = tokenService.generateToken(adminUser)
     }
 
     @Test
     fun getProducts() {
         val response =
             RestAssured.given()
+                .header("Authorization", "Bearer $adminToken")
                 .accept(ContentType.JSON)
-                .`when`().get("${getBaseUrl()}/products")
+                .`when`().get("${getBaseUrl()}/admin/products")
                 .then().extract()
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value())
-        val products = response.body().jsonPath().getList<Any>("")
+        val products = response.body().jsonPath().getList<Any>("content")
         assertThat(products).isNotEmpty()
         assertThat(products.size).isGreaterThanOrEqualTo(2)
     }
@@ -50,19 +67,21 @@ class ProductApiE2ETest {
     fun getProduct() {
         val response =
             RestAssured.given()
-                .get("${getBaseUrl()}/products/1")
+                .header("Authorization", "Bearer $adminToken")
+                .get("${getBaseUrl()}/admin/products/1")
                 .then().extract()
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value())
-        assertThat(response.body().jsonPath().getString("name")).isEqualTo("Test Product")
-        assertThat(response.body().jsonPath().getDouble("price")).isEqualTo(100.0)
+        assertThat(response.body().jsonPath().getString("name")).isEqualTo("Car")
+        assertThat(response.body().jsonPath().getDouble("price")).isEqualTo(1000.0)
     }
 
     @Test
     fun getProduct_notFound() {
         val response =
             RestAssured.given()
-                .get("${getBaseUrl()}/products/999999")
+                .header("Authorization", "Bearer $adminToken")
+                .get("${getBaseUrl()}/admin/products/999999")
                 .then().extract()
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value())
@@ -75,18 +94,23 @@ class ProductApiE2ETest {
             mapOf(
                 "name" to productName,
                 "price" to 100.0,
-                "imageUrl" to "http://example.com/image.jpg",
+                "quantity" to 10,
+                "imageUrl" to "http://example.com/image.jpg"
             )
 
         val response =
             RestAssured.given()
+                .header("Authorization", "Bearer $adminToken")
                 .contentType(ContentType.JSON)
                 .body(newProduct)
                 .`when`()
-                .post("${getBaseUrl()}/products")
+                .post("${getBaseUrl()}/admin/products")
                 .then()
-                .statusCode(HttpStatus.CREATED.value())
                 .extract()
+
+        println("Response status: ${response.statusCode()}")
+        println("Response body: ${response.body().asString()}")
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value())
 
         val responseBody = response.body().jsonPath()
         assertThat(responseBody.getLong("id")).isNotNull()
@@ -101,15 +125,17 @@ class ProductApiE2ETest {
             mapOf(
                 "name" to "Initial Product",
                 "price" to 100.0,
-                "imageUrl" to "http://example.com/initial.jpg",
+                "quantity" to 10,
+                "imageUrl" to "http://example.com/image.jpg"
             )
 
         val createdResponse =
             RestAssured.given()
+                .header("Authorization", "Bearer $adminToken")
                 .contentType(ContentType.JSON)
                 .body(newProduct)
                 .`when`()
-                .post("${getBaseUrl()}/products")
+                .post("${getBaseUrl()}/admin/products")
                 .then()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract()
@@ -120,53 +146,20 @@ class ProductApiE2ETest {
             mapOf(
                 "name" to "Updated Product",
                 "price" to 150.0,
-                "imageUrl" to "http://example.com/updated.jpg",
+                "quantity" to 15,
+                "imageUrl" to "http://example.com/image.jpg"
             )
 
         RestAssured.given()
+            .header("Authorization", "Bearer $adminToken")
             .contentType(ContentType.JSON)
             .body(updatedProduct)
             .`when`()
-            .put("${getBaseUrl()}/products/$productId")
+            .put("${getBaseUrl()}/admin/products/$productId")
             .then()
             .statusCode(HttpStatus.OK.value())
             .body("name", equalTo("Updated Product"))
             .body("price", equalTo(150.0f))
-    }
-
-    @Test
-    fun patchProduct() {
-        val newProduct =
-            mapOf(
-                "name" to "Initial Product",
-                "price" to 100.0,
-                "imageUrl" to "http://example.com/initial.jpg",
-            )
-
-        val createdResponse =
-            RestAssured.given()
-                .contentType(ContentType.JSON)
-                .body(newProduct)
-                .`when`()
-                .post("${getBaseUrl()}/products")
-                .then()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract()
-
-        val productId = createdResponse.body().jsonPath().getLong("id")
-        val patch =
-            mapOf(
-                "name" to "Patched Product",
-            )
-
-        RestAssured.given()
-            .contentType(ContentType.JSON)
-            .body(patch)
-            .`when`()
-            .patch("${getBaseUrl()}/products/$productId")
-            .then()
-            .statusCode(HttpStatus.OK.value())
-            .body("name", equalTo("Patched Product"))
     }
 
     @Test
@@ -175,15 +168,17 @@ class ProductApiE2ETest {
             mapOf(
                 "name" to "Delete Test",
                 "price" to 99.99,
-                "imageUrl" to "http://example.com/delete-me.jpg",
+                "quantity" to 5,
+                "imageUrl" to "http://example.com/image.jpg"
             )
 
         val createdResponse =
             RestAssured.given()
+                .header("Authorization", "Bearer $adminToken")
                 .contentType(ContentType.JSON)
                 .body(newProduct)
                 .`when`()
-                .post("${getBaseUrl()}/products")
+                .post("${getBaseUrl()}/admin/products")
                 .then()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract()
@@ -191,8 +186,9 @@ class ProductApiE2ETest {
         val productId = createdResponse.body().jsonPath().getLong("id")
         val deleteResponse =
             RestAssured.given()
+                .header("Authorization", "Bearer $adminToken")
                 .`when`()
-                .delete("${getBaseUrl()}/products/$productId")
+                .delete("${getBaseUrl()}/admin/products/$productId")
                 .then()
                 .statusCode(HttpStatus.NO_CONTENT.value())
                 .extract()
@@ -200,6 +196,7 @@ class ProductApiE2ETest {
         assertThat(deleteResponse.statusCode())
             .withFailMessage("Expected status code 204 but was ${deleteResponse.statusCode()}")
             .isEqualTo(HttpStatus.NO_CONTENT.value())
+        
         val productCount =
             jdbcTemplate.queryForObject(
                 "SELECT COUNT(*) FROM products WHERE id = ?",
@@ -210,7 +207,8 @@ class ProductApiE2ETest {
 
         val getResponse =
             RestAssured.given()
-                .get("${getBaseUrl()}/products/$productId")
+                .header("Authorization", "Bearer $adminToken")
+                .get("${getBaseUrl()}/admin/products/$productId")
                 .then()
                 .extract()
 

@@ -1,125 +1,60 @@
 package ecommerce.service
 
-import ecommerce.dto.product.ProductPatchRequest
 import ecommerce.dto.product.ProductRequest
-import ecommerce.exception.ProductValidationException
+import ecommerce.exception.DuplicateNameException
+import ecommerce.exception.NotFoundException
 import ecommerce.model.Product
+import ecommerce.repository.ProductOptionRepository
 import ecommerce.repository.ProductRepository
-import ecommerce.validation.NAME_LENGTH_MAXIMUM
-import ecommerce.validation.PRODUCT_NAME_PATTERN
-import ecommerce.validation.PRODUCT_PRICE_MINIMUM
-import ecommerce.validation.URL_PATTERN
+import ecommerce.util.toModel
+import jakarta.transaction.Transactional
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 @Service
 class ProductService(
     private val productRepository: ProductRepository,
+    private val productOptionRepository: ProductOptionRepository,
 ) {
-    private fun validateBasicProductData(request: ProductRequest) {
-        val errors = mutableListOf<String>()
-
-        if (request.name.isBlank()) {
-            errors.add("Product name cannot be blank")
-        }
-        if (request.name.length > NAME_LENGTH_MAXIMUM) {
-            errors.add("Product name must be shorter than $NAME_LENGTH_MAXIMUM characters")
-        }
-        if (!request.name.matches(PRODUCT_NAME_PATTERN.toRegex())) {
-            errors.add("Product name contains invalid characters")
-        }
-
-        val minPrice = PRODUCT_PRICE_MINIMUM.toDouble()
-        if (request.price <= minPrice) {
-            errors.add("Product price must be greater than $minPrice")
-        }
-
-        if (request.imageUrl.isBlank()) {
-            errors.add("Product image URL cannot be blank")
-        }
-        if (!request.imageUrl.matches(URL_PATTERN.toRegex())) {
-            errors.add("Product image URL must start with http:// or https://")
-        }
-
-        if (errors.isNotEmpty()) {
-            throw ProductValidationException(errors)
-        }
+    fun findAllProducts(
+        page: Int,
+        size: Int,
+        sortBy: String,
+    ): Page<Product> {
+        val pageable = PageRequest.of(page, size, Sort.by(sortBy))
+        return productRepository.findAll(pageable)
     }
 
-    private fun validateProductNameUniqueness(
-        name: String,
-        excludeId: Long? = null,
-    ) {
-        if (excludeId != null) {
-            val existingProduct = productRepository.findById(excludeId)
-            if (existingProduct.name != name && productRepository.existsByName(name)) {
-                throw ProductValidationException("Product name already exists")
-            }
-        } else {
-            if (productRepository.existsByName(name)) {
-                throw ProductValidationException("Product name already exists")
-            }
-        }
+    fun findProductById(id: Long): Product {
+        return productRepository.findByIdOrNull(id) ?: throw NotFoundException("Product with id $id not found")
     }
 
-    private fun validateProductForCreation(request: ProductRequest) {
-        validateBasicProductData(request)
-        validateProductNameUniqueness(request.name)
-    }
-
-    private fun validateProductForUpdate(
-        id: Long,
-        request: ProductRequest,
-    ) {
-        validateBasicProductData(request)
-
-        val existingProduct = productRepository.findById(id)
-        if (existingProduct.name != request.name) {
-            validateProductNameUniqueness(request.name, id)
-        }
-    }
-
+    @Transactional
     fun createProduct(request: ProductRequest): Product {
-        validateProductForCreation(request)
-
-        val product =
-            Product(
-                name = request.name,
-                price = request.price,
-                imageUrl = request.imageUrl,
-            )
+        if (productRepository.existsByName(request.name)) {
+            throw DuplicateNameException("Product name already exists")
+        }
+        val product = request.toModel()
         return productRepository.save(product)
     }
 
+    @Transactional
     fun updateProduct(
         id: Long,
         request: ProductRequest,
     ): Product {
-        validateProductForUpdate(id, request)
-
-        val product =
-            Product(
-                id = id,
-                name = request.name,
-                price = request.price,
-                imageUrl = request.imageUrl,
-            )
-        return productRepository.update(id, product)
-    }
-
-    fun patchProduct(
-        id: Long,
-        request: ProductPatchRequest,
-    ): Product {
-        request.name?.let { newName ->
-            validateProductNameUniqueness(newName, id)
+        if (!productRepository.existsById(id)) {
+            throw NotFoundException("Product with id $id not found")
         }
-
-        return productRepository.patch(id, request)
+        val updatedProduct = request.toModel(id)
+        return productRepository.save(updatedProduct)
     }
 
-    fun findAll(): List<Product> = productRepository.findAll()
-
-    fun findById(id: Long): Product = productRepository.findById(id)
-
-    fun deleteById(id: Long) = productRepository.delete(id)
+    fun deleteById(id: Long) {
+        productOptionRepository.deleteProductOptionsByProductId(id)
+        productRepository.deleteById(id)
+    }
 }
