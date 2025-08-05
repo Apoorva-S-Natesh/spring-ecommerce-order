@@ -17,8 +17,12 @@ INSERT INTO members (id, email, password, name, role) VALUES
 
 INSERT INTO carts (member_id, quantity, updated_at) VALUES
     (1, 1, TIMESTAMP '2025-07-25 08:00:00.000'),
-    (2, 2, TIMESTAMP '2025-07-25 08:00:00.000');
+    (3, 2, TIMESTAMP '2025-08-05 08:00:00.000');
 
 INSERT INTO cart_items (cart_id, product_option_id, quantity, updated_at) VALUES
   (1, 1, 1,TIMESTAMP '2025-07-25 08:00:00.000'),
-  (2, 2, 2,TIMESTAMP '2025-07-25 08:00:00.000');
+  (2, 2, 2,TIMESTAMP '2025-08-05 08:00:00.000');
+
+INSERT INTO cart_statistics (cart_item_id, cart_id, product_option_id, quantity, added_at) VALUES
+  (1, 1, 1, 1, TIMESTAMP '2025-07-25 08:00:00.000'),
+  (2, 2, 2, 2, TIMESTAMP '2025-08-05 08:00:00.000');
