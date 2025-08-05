@@ -2,6 +2,7 @@ package ecommerce.advice
 
 import ecommerce.exception.AuthenticationException
 import ecommerce.exception.AuthorizationException
+import ecommerce.exception.DuplicateNameException
 import ecommerce.exception.ErrorResponse
 import ecommerce.exception.NotFoundException
 import ecommerce.exception.ProductValidationException
@@ -46,6 +47,15 @@ class GlobalControllerAdvice {
         return ErrorResponse(
             error = "Forbidden",
             message = e.message ?: "Access denied",
+        )
+    }
+
+    @ExceptionHandler(DuplicateNameException::class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    fun handleDuplicateNameException(e: DuplicateNameException): ErrorResponse {
+        return ErrorResponse(
+            error = "CONFLICT",
+            message = e.message ?: "Duplicate name conflict",
         )
     }
 
