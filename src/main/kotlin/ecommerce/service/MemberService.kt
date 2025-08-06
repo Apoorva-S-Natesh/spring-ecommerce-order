@@ -29,7 +29,7 @@ class MemberService(
             throw IllegalArgumentException("Email already exists")
         }
         val hashedPassword = passwordService.hashPassword(request.password)
-        val member = request.toModel(0L, hashedPassword)
+        val member = request.toModel(hashedPassword)
 
         member.cart = cartRepository.save(Cart())
 
