@@ -1,17 +1,14 @@
 package ecommerce.util
 
+import ecommerce.dto.ProductRequest
 import ecommerce.dto.member.RegisterRequest
-import ecommerce.dto.product.ProductRequest
 import ecommerce.model.Member
 import ecommerce.model.Product
 import ecommerce.model.ProductOption
 
 fun ProductRequest.toModel(id: Long? = null) = Product(name, price, quantity, imageUrl, id)
 
-fun RegisterRequest.toModel(
-    id: Long,
-    hashedPassword: String,
-) = Member(email, hashedPassword, name, role)
+fun RegisterRequest.toModel(hashedPassword: String) = Member(email, hashedPassword, name, role)
 
 data class ProductResponse(
     val id: Long?,

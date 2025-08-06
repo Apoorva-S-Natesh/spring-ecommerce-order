@@ -1,6 +1,5 @@
 package ecommerce.model
 
-import jakarta.persistence.Table
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -10,6 +9,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToOne
+import jakarta.persistence.Table
 import java.time.LocalDateTime
 
 @Entity
@@ -29,10 +29,6 @@ class CartItem(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
 ) {
-
-//    @OneToMany(mappedBy = "cartItem", cascade = [CascadeType.REMOVE], orphanRemoval = true)
-//    val cartStatistics: List<CartStatistics> = mutableListOf()
-
     fun modify(
         cart: Cart?,
         productOption: ProductOption?,
@@ -45,9 +41,9 @@ class CartItem(
         if (productOption != null) {
             this.productOption = productOption
         }
-        if (quantity != null) {
-            this.quantity = quantity
-        }
+//        if (quantity != null) {
+        this.quantity = quantity
+//        }
         if (itemAddedAt != null) {
             this.itemAddedAt = itemAddedAt
         }

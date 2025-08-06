@@ -1,9 +1,11 @@
 package ecommerce.service
 
-import ecommerce.dto.product.ProductRequest
+import ecommerce.dto.ProductRequest
 import ecommerce.exception.DuplicateNameException
+import ecommerce.exception.InsufficientProductOptionsException
 import ecommerce.exception.NotFoundException
 import ecommerce.model.Product
+import ecommerce.model.ProductOption
 import ecommerce.repository.ProductOptionRepository
 import ecommerce.repository.ProductRepository
 import ecommerce.util.toModel
@@ -37,8 +39,17 @@ class ProductService(
         if (productRepository.existsByName(request.name)) {
             throw DuplicateNameException("Product name already exists")
         }
-        val product = request.toModel()
-        return productRepository.save(product)
+        if (request.productOptions.isEmpty()) {
+            throw InsufficientProductOptionsException("Product needs at least one option")
+        }
+        var product = request.toModel()
+        val savedProduct = productRepository.save(product)
+
+        request.productOptions.forEach { option ->
+            option.productId = savedProduct.id!!
+            productOptionRepository.save(ProductOption(option.name, option.quantity, product))
+        }
+        return savedProduct
     }
 
     @Transactional

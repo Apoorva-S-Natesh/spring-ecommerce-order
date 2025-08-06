@@ -1,6 +1,6 @@
 package ecommerce.service
 
-import ecommerce.dto.product.ProductOptionRequest
+import ecommerce.dto.ProductOptionRequest
 import ecommerce.exception.DuplicateNameException
 import ecommerce.exception.NotFoundException
 import ecommerce.model.ProductOption
@@ -24,6 +24,7 @@ class ProductOptionService(
             throw NotFoundException("Product does not exist")
         }
 
+        val product = productRepository.findById(productId).get()
         val existingOption = productOptionId?.let { productOptionRepository.findById(it).orElse(null) }
 
         if (existingOption != null) {
@@ -32,7 +33,7 @@ class ProductOptionService(
                     id = productOptionId,
                     name = request.name,
                     quantity = request.quantity,
-                    product = request.product,
+                    product = product,
                 )
             return productOptionRepository.save(updatedOption)
         } else {
@@ -43,7 +44,7 @@ class ProductOptionService(
                 ProductOption(
                     name = request.name,
                     quantity = request.quantity,
-                    product = request.product,
+                    product = product,
                 )
             return productOptionRepository.save(newOption)
         }
