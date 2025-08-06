@@ -28,28 +28,4 @@ class CartItem(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
-) {
-    fun modify(
-        cart: Cart?,
-        productOption: ProductOption?,
-        quantity: Int,
-        itemAddedAt: LocalDateTime?,
-    ) {
-        if (cart != null) {
-            this.cart = cart
-        }
-        if (productOption != null) {
-            this.productOption = productOption
-        }
-        if (quantity != null) {
-            this.quantity = quantity
-        }
-        if (itemAddedAt != null) {
-            this.itemAddedAt = itemAddedAt
-        }
-    }
-
-    override fun toString(): String {
-        return "Cart Item(id=$id, productOption=$productOption, quantity=$quantity)"
-    }
-}
+)

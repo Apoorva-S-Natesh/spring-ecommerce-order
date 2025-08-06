@@ -7,6 +7,7 @@ import ecommerce.model.ProductOption
 import ecommerce.repository.ProductOptionRepository
 import ecommerce.repository.ProductRepository
 import jakarta.transaction.Transactional
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 @Service
@@ -25,7 +26,7 @@ class ProductOptionService(
         }
 
         val product = productRepository.findById(productId).get()
-        val existingOption = productOptionId?.let { productOptionRepository.findById(it).orElse(null) }
+        val existingOption = productOptionId?.let { productOptionRepository.findByIdOrNull(it) }
 
         if (existingOption != null) {
             val updatedOption =

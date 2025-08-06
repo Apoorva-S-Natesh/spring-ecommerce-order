@@ -10,13 +10,11 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/admin/analytics")
 @RestController
 class CartStatisticsController(
-    //  private val cartStatisticsRepository: CartStatisticsRepository,
     private val cartStatisticsService: CartStatisticsService,
 ) {
     @GetMapping("/top-products")
     fun getTopProducts(): List<TopProductAnalytics> {
         return cartStatisticsService.findTop5MostAddedProductsLast30Days()
-        // return cartStatisticsRepository.findTop5MostAddedProductsLast30Days()
     }
 
     @GetMapping("/active-users")

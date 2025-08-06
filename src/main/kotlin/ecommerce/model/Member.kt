@@ -39,8 +39,4 @@ class Member(
         password = "",
         name = name,
     )
-
-    override fun toString(): String {
-        return "Member(id=$id, email=$email, name=$name, role=$role, cart=$cart)"
-    }
 }

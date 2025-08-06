@@ -32,8 +32,4 @@ class Product(
         private const val MAX_NAME_LENGTH = 15
         private const val ALLOWED_SPECIAL_CHAR = "()[]+-&/_ "
     }
-
-    override fun toString(): String {
-        return "Product(id=$id, name=$name, price=$price quantity=$quantity)"
-    }
 }

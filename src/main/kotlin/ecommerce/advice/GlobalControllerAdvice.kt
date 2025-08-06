@@ -45,7 +45,6 @@ class GlobalControllerAdvice {
         return createErrorResponse(e, e.errorCode, HttpStatus.UNAUTHORIZED)
     }
 
-
     @ExceptionHandler(AuthorizationException::class)
     fun handleAuthorizationException(e: AuthorizationException): ResponseEntity<ErrorResponse> {
         return createErrorResponse(e, e.errorCode, HttpStatus.FORBIDDEN)

@@ -43,8 +43,4 @@ class ProductOption(
         private const val MAX_OPTION_NAME_LENGTH = 50
         private const val ALLOWED_SPECIAL_CHAR = "()[]+-&/_ "
     }
-
-    override fun toString(): String {
-        return "Product Option(id=$id, name=$name, quantity=$quantity, product=$product)"
-    }
 }

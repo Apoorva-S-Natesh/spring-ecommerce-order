@@ -44,8 +44,4 @@ class Cart(
         quantity = 0,
         newItemAddedAt = LocalDateTime.now(),
     )
-
-    override fun toString(): String {
-        return "Cart(id=$id, member=$member, cartItem=$cartItem, quantity=$quantity)"
-    }
 }

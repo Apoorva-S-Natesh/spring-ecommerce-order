@@ -2,14 +2,16 @@ package ecommerce.service
 
 import ecommerce.dto.cart.AddToCartRequest
 import ecommerce.exception.NotFoundException
+import ecommerce.model.Cart
 import ecommerce.model.CartItem
+import ecommerce.model.ProductOption
 import ecommerce.repository.CartItemRepository
 import ecommerce.repository.CartRepository
 import ecommerce.repository.ProductOptionRepository
 import jakarta.transaction.Transactional
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
-import kotlin.jvm.optionals.getOrNull
 
 @Service
 class CartItemService(
@@ -35,25 +37,25 @@ class CartItemService(
     }
 
     private fun findCartById(cartId: Long) =
-        cartRepository.findById(cartId).getOrNull()
+        cartRepository.findByIdOrNull(cartId)
             ?: throw NotFoundException("Cart not found")
 
     private fun findProductOptionById(productOptionId: Long) =
-        productOptionRepository.findById(productOptionId).getOrNull()
+        productOptionRepository.findByIdOrNull(productOptionId)
             ?: throw NotFoundException("Product option not found")
 
     private fun findExistingCartItem(
         cartItemId: Long?,
-        cart: ecommerce.model.Cart,
-        productOption: ecommerce.model.ProductOption,
-    ) = cartItemId?.let { cartItemRepository.findById(it).getOrNull() }
+        cart: Cart,
+        productOption: ProductOption,
+    ) = cartItemId?.let { cartItemRepository.findByIdOrNull(it) }
         ?: cartItemRepository.findByCartAndProductOption(cart, productOption)
 
     private fun updateExistingCartItem(
         existingCartItem: CartItem,
         request: AddToCartRequest,
-        productOption: ecommerce.model.ProductOption,
-        cart: ecommerce.model.Cart,
+        productOption: ProductOption,
+        cart: Cart,
         isDirectUpdate: Boolean,
     ): CartItem {
         if (isDirectUpdate) {
@@ -68,14 +70,14 @@ class CartItemService(
             } else {
                 existingCartItem.quantity + request.newProductOptionQuantity
             }
-
-        existingCartItem.modify(null, null, newQuantity, LocalDateTime.now())
+        existingCartItem.quantity = newQuantity
+        existingCartItem.itemAddedAt = LocalDateTime.now()
         return cartItemRepository.save(existingCartItem)
     }
 
     private fun createNewCartItem(
-        cart: ecommerce.model.Cart,
-        productOption: ecommerce.model.ProductOption,
+        cart: Cart,
+        productOption: ProductOption,
         request: AddToCartRequest,
     ) = cartItemRepository.save(
         CartItem(
@@ -88,7 +90,7 @@ class CartItemService(
 
     private fun validateQuantityIncrement(
         request: AddToCartRequest,
-        productOption: ecommerce.model.ProductOption,
+        productOption: ProductOption,
     ) {
         if (request.newProductOptionQuantity <= productOption.quantity) {
             throw IllegalArgumentException(
@@ -99,7 +101,7 @@ class CartItemService(
     }
 
     private fun updateProductOptionQuantity(
-        productOption: ecommerce.model.ProductOption,
+        productOption: ProductOption,
         request: AddToCartRequest,
     ) {
         productOption.quantity = request.newProductOptionQuantity
@@ -107,7 +109,7 @@ class CartItemService(
     }
 
     private fun updateCartQuantity(
-        cart: ecommerce.model.Cart,
+        cart: Cart,
         request: AddToCartRequest,
     ) {
         cart.quantity += request.newProductOptionQuantity
@@ -118,16 +120,16 @@ class CartItemService(
         cartItemId: Long,
         cartId: Long,
     ) {
-        cartRepository.findById(cartId).getOrNull()
+        cartRepository.findByIdOrNull(cartId)
             ?: throw NotFoundException("Cart not found")
-        cartItemRepository.findById(cartItemId).getOrNull()
+        cartItemRepository.findByIdOrNull(cartItemId)
             ?: throw NotFoundException("Cart Item not found")
         cartItemRepository.deleteById(cartItemId)
     }
 
     @Transactional
     fun deleteAllCartItemsByCartId(cartId: Long) {
-        cartRepository.findById(cartId).getOrNull()
+        cartRepository.findByIdOrNull(cartId)
             ?: throw NotFoundException("Cart not found")
         cartItemRepository.deleteAllByCartId(cartId)
     }
