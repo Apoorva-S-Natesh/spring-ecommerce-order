@@ -8,18 +8,20 @@ import ecommerce.exception.InsufficientProductOptionsException
 import ecommerce.exception.NotFoundException
 import ecommerce.exception.ProductValidationException
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestControllerAdvice
 
 @RestControllerAdvice
 class GlobalControllerAdvice {
+
     @ExceptionHandler(NotFoundException::class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     fun handleNotFoundException(e: NotFoundException): ErrorResponse {
         return ErrorResponse(
-            error = "NOT_FOUND",
-            message = e.message ?: "Resource not found",
+            error = e.errorCode,
+            message = e.message!!,
         )
     }
 
@@ -27,9 +29,9 @@ class GlobalControllerAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     fun handleProductValidationException(e: ProductValidationException): ErrorResponse {
         return ErrorResponse(
-            error = "VALIDATION_ERROR",
-            message = e.message ?: "Validation failed",
-            fieldErrors = null,
+            error = e.errorCode,
+            message = e.message!!,
+            fieldErrors = e.errors,
         )
     }
 
@@ -37,8 +39,8 @@ class GlobalControllerAdvice {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     fun handleAuthenticationException(e: AuthenticationException): ErrorResponse {
         return ErrorResponse(
-            error = "Unauthorized",
-            message = e.message ?: "Authentication failed",
+            error = e.errorCode,
+            message = e.message!!,
         )
     }
 
@@ -46,8 +48,8 @@ class GlobalControllerAdvice {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     fun handleAuthorizationException(e: AuthorizationException): ErrorResponse {
         return ErrorResponse(
-            error = "Forbidden",
-            message = e.message ?: "Access denied",
+            error = e.errorCode,
+            message = e.message!!,
         )
     }
 
@@ -55,17 +57,26 @@ class GlobalControllerAdvice {
     @ResponseStatus(HttpStatus.CONFLICT)
     fun handleDuplicateNameException(e: DuplicateNameException): ErrorResponse {
         return ErrorResponse(
-            error = "CONFLICT",
-            message = e.message ?: "Duplicate name conflict",
+            error = e.errorCode,
+            message = e.message!!,
         )
     }
 
-    @ExceptionHandler(value = [IllegalArgumentException::class, InsufficientProductOptionsException::class])
+    @ExceptionHandler(InsufficientProductOptionsException::class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    fun handleIllegalArgumentException(e: Exception): ErrorResponse {
+    fun handleIllegalArgumentException(e: InsufficientProductOptionsException): ErrorResponse {
+        return ErrorResponse(
+            error = e.errorCode,
+            message = e.message!!,
+        )
+    }
+
+    @ExceptionHandler(IllegalArgumentException::class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    fun handleIllegalArgumentException(e: IllegalArgumentException): ErrorResponse {
         return ErrorResponse(
             error = "BAD_REQUEST",
-            message = e.message ?: "Invalid request",
+            message = e.message!!,
         )
     }
 }

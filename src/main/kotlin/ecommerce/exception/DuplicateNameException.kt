@@ -1,3 +1,3 @@
 package ecommerce.exception
 
-class DuplicateNameException(message: String) : RuntimeException(message)
+class DuplicateNameException(message: String = "Duplicate name conflict") : Exceptions("CONFLICT", message)

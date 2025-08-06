@@ -1,3 +1,3 @@
 package ecommerce.exception
 
-class AuthenticationException(message: String) : RuntimeException(message)
+class AuthenticationException(message: String = "Authentication failed") : Exceptions("UNAUTHORIZED", message)
