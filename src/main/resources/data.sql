@@ -8,7 +8,7 @@ INSERT INTO products (name, price, quantity, image_url) VALUES
 INSERT INTO product_options (name, quantity, product_id) VALUES
                                                              ('Blue', 5, 1),
                                                              ('Red', 10, 2),
-                                                                ('Yellow', 10, 2);
+                                                             ('Yellow', 10, 2);
 
 --  admin pw: secret
 INSERT INTO members (id, email, password, name, role) VALUES
