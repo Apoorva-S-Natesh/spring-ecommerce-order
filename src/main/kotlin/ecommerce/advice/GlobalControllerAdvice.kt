@@ -4,6 +4,7 @@ import ecommerce.exception.AuthenticationException
 import ecommerce.exception.AuthorizationException
 import ecommerce.exception.DuplicateNameException
 import ecommerce.exception.ErrorResponse
+import ecommerce.exception.InsufficientProductOptionsException
 import ecommerce.exception.NotFoundException
 import ecommerce.exception.ProductValidationException
 import org.springframework.http.HttpStatus
@@ -59,9 +60,9 @@ class GlobalControllerAdvice {
         )
     }
 
-    @ExceptionHandler(IllegalArgumentException::class)
+    @ExceptionHandler(value = [IllegalArgumentException::class, InsufficientProductOptionsException::class])
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    fun handleIllegalArgumentException(e: IllegalArgumentException): ErrorResponse {
+    fun handleIllegalArgumentException(e: Exception): ErrorResponse {
         return ErrorResponse(
             error = "BAD_REQUEST",
             message = e.message ?: "Invalid request",
