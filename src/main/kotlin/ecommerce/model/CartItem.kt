@@ -21,7 +21,7 @@ class CartItem(
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_option_id", nullable = true)
     var productOption: ProductOption,
-    @Column(name = "quantity", nullable = false)
+    @Column(name = "quantity", nullable = true)
     var quantity: Int,
     @Column(name = "updatedAt", nullable = false)
     var itemAddedAt: LocalDateTime? = null,
@@ -41,9 +41,9 @@ class CartItem(
         if (productOption != null) {
             this.productOption = productOption
         }
-//        if (quantity != null) {
-        this.quantity = quantity
-//        }
+        if (quantity != null) {
+            this.quantity = quantity
+        }
         if (itemAddedAt != null) {
             this.itemAddedAt = itemAddedAt
         }
