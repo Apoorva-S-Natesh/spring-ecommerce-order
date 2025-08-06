@@ -1,8 +1,8 @@
 package ecommerce.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import ecommerce.dto.product.ProductOptionRequest
-import ecommerce.dto.product.ProductRequest
+import ecommerce.dto.ProductOptionRequest
+import ecommerce.dto.ProductRequest
 import ecommerce.model.Member
 import ecommerce.model.Product
 import ecommerce.model.Role
@@ -56,6 +56,7 @@ class AdminControllerTest {
                 price = 99.99,
                 quantity = 10,
                 imageUrl = "https://example.com",
+                productOptions = listOf(ProductOptionRequest("black", 20, 6L), ProductOptionRequest("Yellow", 10, 6L)),
             )
 
         val createdProductResponse =
@@ -119,6 +120,7 @@ class AdminControllerTest {
                 price = 149.99,
                 quantity = 5,
                 imageUrl = "https://example.com",
+                productOptions = listOf(ProductOptionRequest("black", 20, 6L), ProductOptionRequest("Yellow", 10, 6L)),
             )
 
         mockMvc.post("/api/admin/products") {
@@ -146,6 +148,7 @@ class AdminControllerTest {
                 price = -10.0,
                 quantity = 0,
                 imageUrl = "invalid-url",
+                productOptions = listOf(ProductOptionRequest("black", 20, 6L), ProductOptionRequest("Yellow", 10, 6L)),
             )
 
         mockMvc.post("/api/admin/products") {
@@ -166,7 +169,8 @@ class AdminControllerTest {
                 name = "OriginalProduct",
                 price = 99.99,
                 quantity = 10,
-                imageUrl = "https://",
+                imageUrl = "https://example.com",
+                productOptions = listOf(ProductOptionRequest("black", 20, 6L), ProductOptionRequest("Yellow", 10, 6L)),
             )
 
         val createdProductResponse =
@@ -188,6 +192,7 @@ class AdminControllerTest {
                 price = 199.99,
                 quantity = 20,
                 imageUrl = "https://example.com",
+                productOptions = listOf(ProductOptionRequest("black", 20, 6L), ProductOptionRequest("Yellow", 10, 6L)),
             )
 
         mockMvc.put("/api/admin/products/$productId") {
@@ -212,6 +217,7 @@ class AdminControllerTest {
                 price = 99.99,
                 quantity = 10,
                 imageUrl = "https://example.com",
+                productOptions = listOf(ProductOptionRequest("black", 20, 6L), ProductOptionRequest("Yellow", 10, 6L)),
             )
 
         val createdProductResponse =
@@ -250,6 +256,7 @@ class AdminControllerTest {
                 price = 99.99,
                 quantity = 10,
                 imageUrl = "https://example.com",
+                productOptions = listOf(ProductOptionRequest("black", 20, 6L), ProductOptionRequest("Yellow", 10, 6L)),
             )
 
         val createdProductResponse =
@@ -275,7 +282,7 @@ class AdminControllerTest {
             ProductOptionRequest(
                 name = "Red Color",
                 quantity = 5,
-                product = product,
+                productId = productId,
             )
 
         mockMvc.post("/api/admin/products/$productId/options") {
@@ -301,6 +308,7 @@ class AdminControllerTest {
                 price = 99.99,
                 quantity = 10,
                 imageUrl = "https://example.com",
+                productOptions = listOf(ProductOptionRequest("black", 20, 6L), ProductOptionRequest("Yellow", 10, 6L)),
             )
 
         val createdProductResponse =
@@ -326,7 +334,7 @@ class AdminControllerTest {
             ProductOptionRequest(
                 name = "",
                 quantity = 1,
-                product = product,
+                productId = productId,
             )
 
         mockMvc.post("/api/admin/products/$productId/options") {
@@ -410,6 +418,7 @@ class AdminControllerTest {
                 price = 99.99,
                 quantity = 10,
                 imageUrl = "https://example.com",
+                productOptions = listOf(ProductOptionRequest("black", 20, 6L), ProductOptionRequest("Yellow", 10, 6L)),
             )
 
         val createdProductResponse =
@@ -429,14 +438,14 @@ class AdminControllerTest {
             ProductOptionRequest(
                 name = "Blue Color",
                 quantity = 3,
-                product =
-                    Product(
-                        name = "OptionUpdate",
-                        price = 99.99,
-                        quantity = 10,
-                        imageUrl = "https://example.com",
-                        id = productId,
-                    ),
+                productId = productId,
+//                    Product(
+//                        name = "OptionUpdate",
+//                        price = 99.99,
+//                        quantity = 10,
+//                        imageUrl = "https://example.com",
+//                        id = productId,
+//                    ),
             )
 
         val createdOptionResponse =
@@ -456,14 +465,14 @@ class AdminControllerTest {
             ProductOptionRequest(
                 name = "Green Color",
                 quantity = 8,
-                product =
-                    Product(
-                        name = "OptionUpdate",
-                        price = 99.99,
-                        quantity = 10,
-                        imageUrl = "https://example.com",
-                        id = productId,
-                    ),
+                productId = productId,
+//                    Product(
+//                        name = "OptionUpdate",
+//                        price = 99.99,
+//                        quantity = 10,
+//                        imageUrl = "https://example.com",
+//                        id = productId,
+//                    ),
             )
 
         mockMvc.put("/api/admin/products/$productId/options/$optionId") {
@@ -488,6 +497,7 @@ class AdminControllerTest {
                 price = 99.99,
                 quantity = 10,
                 imageUrl = "https://example.com",
+                productOptions = listOf(ProductOptionRequest("black", 20, 6L), ProductOptionRequest("Yellow", 10, 6L)),
             )
 
         val createdProductResponse =
@@ -507,14 +517,14 @@ class AdminControllerTest {
             ProductOptionRequest(
                 name = "Unique Color",
                 quantity = 5,
-                product =
-                    Product(
-                        name = "DuplicateTest",
-                        price = 99.99,
-                        quantity = 10,
-                        imageUrl = "https://example.com",
-                        id = productId,
-                    ),
+                productId = productId,
+//                    Product(
+//                        name = "DuplicateTest",
+//                        price = 99.99,
+//                        quantity = 10,
+//                        imageUrl = "https://example.com",
+//                        id = productId,
+//                    ),
             )
 
         mockMvc.post("/api/admin/products/$productId/options") {
@@ -529,14 +539,14 @@ class AdminControllerTest {
             ProductOptionRequest(
                 name = "Unique Color",
                 quantity = 3,
-                product =
-                    Product(
-                        name = "DuplicateTest",
-                        price = 99.99,
-                        quantity = 10,
-                        imageUrl = "https://example.com",
-                        id = productId,
-                    ),
+                productId = productId,
+//                    Product(
+//                        name = "DuplicateTest",
+//                        price = 99.99,
+//                        quantity = 10,
+//                        imageUrl = "https://example.com",
+//                        id = productId,
+//                    ),
             )
 
         mockMvc.post("/api/admin/products/$productId/options") {
@@ -556,14 +566,14 @@ class AdminControllerTest {
             ProductOptionRequest(
                 name = "Test Color",
                 quantity = 5,
-                product =
-                    Product(
-                        name = "NonExistent",
-                        price = 99.99,
-                        quantity = 10,
-                        imageUrl = "https://example.com",
-                        id = 999999L,
-                    ),
+                productId = 100,
+//                    Product(
+//                        name = "NonExistent",
+//                        price = 99.99,
+//                        quantity = 10,
+//                        imageUrl = "https://example.com",
+//                        id = 999999L,
+//                    ),
             )
 
         mockMvc.put("/api/admin/products/999999/options/1") {

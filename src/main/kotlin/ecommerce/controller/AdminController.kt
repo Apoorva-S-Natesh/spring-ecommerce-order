@@ -1,7 +1,7 @@
 package ecommerce.controller
 
-import ecommerce.dto.product.ProductOptionRequest
-import ecommerce.dto.product.ProductRequest
+import ecommerce.dto.ProductOptionRequest
+import ecommerce.dto.ProductRequest
 import ecommerce.model.Product
 import ecommerce.model.ProductOption
 import ecommerce.service.ProductOptionService
@@ -9,7 +9,6 @@ import ecommerce.service.ProductService
 import jakarta.validation.Valid
 import org.springframework.data.domain.Page
 import org.springframework.http.ResponseEntity
-import java.net.URI
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -19,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import java.net.URI
 
 @RequestMapping("/api/admin/products")
 @RestController
