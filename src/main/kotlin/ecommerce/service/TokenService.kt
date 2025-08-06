@@ -42,9 +42,4 @@ class TokenService(
             null
         }
     }
-
-    fun extractMemberId(token: String): Long? {
-        val claims = validateToken(token)
-        return claims?.subject?.toLongOrNull()
-    }
 }

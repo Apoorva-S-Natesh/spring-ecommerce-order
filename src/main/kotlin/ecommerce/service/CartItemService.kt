@@ -6,7 +6,6 @@ import ecommerce.model.CartItem
 import ecommerce.repository.CartItemRepository
 import ecommerce.repository.CartRepository
 import ecommerce.repository.ProductOptionRepository
-import ecommerce.repository.ProductRepository
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -17,9 +16,6 @@ class CartItemService(
     private val cartRepository: CartRepository,
     private val cartItemRepository: CartItemRepository,
     private val productOptionRepository: ProductOptionRepository,
-    private val productRepository: ProductRepository,
-    private val productOptionService: ProductOptionService,
-    private val productService: ProductService,
 ) {
     @Transactional
     fun saveCartItem(

@@ -59,11 +59,7 @@ class CartItemServiceTest {
                 cartRepository,
                 cartItemRepository,
                 productOptionRepository,
-                productRepository,
-                productOptionService,
-                productService,
             )
-
         testMember = Member("test@example.com", "password", "Test User", Role.USER, id = 1L)
         testCart = Cart(member = testMember, id = 1L)
         testProduct = Product("Test Product", 99.99, 10, "https://example.com/image.jpg", id = 1L)

@@ -24,16 +24,6 @@ interface CartRepository : JpaRepository<Cart, Long> {
     ): Cart?
 
     @Modifying
-    @Query(
-        "DELETE FROM Cart c WHERE c.member.id = :memberId AND EXISTS " +
-            "(SELECT ci FROM CartItem ci WHERE ci.cart = c AND ci.productOption.id = :productOptionId)",
-    )
-    fun deleteByMemberIdAndCartItemProductOptionId(
-        memberId: Long,
-        productOptionId: Long,
-    )
-
-    @Modifying
     @Query("DELETE FROM Cart c WHERE c.member.id = :memberId")
     fun deleteByMemberId(memberId: Long)
 }

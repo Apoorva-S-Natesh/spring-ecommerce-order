@@ -8,7 +8,6 @@ import ecommerce.repository.CartItemRepository
 import ecommerce.repository.CartRepository
 import ecommerce.repository.MemberRepository
 import ecommerce.repository.ProductOptionRepository
-import ecommerce.repository.ProductRepository
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -18,7 +17,6 @@ import kotlin.jvm.optionals.getOrNull
 class CartService(
     private val cartRepository: CartRepository,
     private val cartItemRepository: CartItemRepository,
-    private val productRepository: ProductRepository,
     private val productOptionRepository: ProductOptionRepository,
     private val memberRepository: MemberRepository,
 ) {

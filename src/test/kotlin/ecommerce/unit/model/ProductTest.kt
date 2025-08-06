@@ -57,10 +57,6 @@ class ProductTest {
         }
     }
 
-    @Test
-    fun `throw exception - product contains duplicate product options`() {
-    }
-
     companion object {
         private const val VALID_IMAGE_URL = "http://example.com/image.jpg"
         private const val INVALID_IMAGE_URL = "hp://invalid"

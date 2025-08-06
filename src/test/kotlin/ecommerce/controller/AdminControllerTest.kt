@@ -439,13 +439,6 @@ class AdminControllerTest {
                 name = "Blue Color",
                 quantity = 3,
                 productId = productId,
-//                    Product(
-//                        name = "OptionUpdate",
-//                        price = 99.99,
-//                        quantity = 10,
-//                        imageUrl = "https://example.com",
-//                        id = productId,
-//                    ),
             )
 
         val createdOptionResponse =
@@ -466,13 +459,6 @@ class AdminControllerTest {
                 name = "Green Color",
                 quantity = 8,
                 productId = productId,
-//                    Product(
-//                        name = "OptionUpdate",
-//                        price = 99.99,
-//                        quantity = 10,
-//                        imageUrl = "https://example.com",
-//                        id = productId,
-//                    ),
             )
 
         mockMvc.put("/api/admin/products/$productId/options/$optionId") {
@@ -518,13 +504,6 @@ class AdminControllerTest {
                 name = "Unique Color",
                 quantity = 5,
                 productId = productId,
-//                    Product(
-//                        name = "DuplicateTest",
-//                        price = 99.99,
-//                        quantity = 10,
-//                        imageUrl = "https://example.com",
-//                        id = productId,
-//                    ),
             )
 
         mockMvc.post("/api/admin/products/$productId/options") {
@@ -540,13 +519,6 @@ class AdminControllerTest {
                 name = "Unique Color",
                 quantity = 3,
                 productId = productId,
-//                    Product(
-//                        name = "DuplicateTest",
-//                        price = 99.99,
-//                        quantity = 10,
-//                        imageUrl = "https://example.com",
-//                        id = productId,
-//                    ),
             )
 
         mockMvc.post("/api/admin/products/$productId/options") {
@@ -567,13 +539,6 @@ class AdminControllerTest {
                 name = "Test Color",
                 quantity = 5,
                 productId = 100,
-//                    Product(
-//                        name = "NonExistent",
-//                        price = 99.99,
-//                        quantity = 10,
-//                        imageUrl = "https://example.com",
-//                        id = 999999L,
-//                    ),
             )
 
         mockMvc.put("/api/admin/products/999999/options/1") {

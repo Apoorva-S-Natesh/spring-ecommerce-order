@@ -2,7 +2,6 @@ package ecommerce.controller
 
 import ecommerce.model.Member
 import ecommerce.model.Role
-import ecommerce.service.CartStatisticsService
 import ecommerce.service.TokenService
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -23,12 +22,6 @@ import org.springframework.transaction.annotation.Transactional
 class CartStatisticsControllerTest() {
     @Autowired
     private lateinit var mockMvc: MockMvc
-
-    @Autowired
-    private lateinit var cartStatisticsService: CartStatisticsService
-
-    @Autowired
-    private lateinit var cartStatisticsController: CartStatisticsController
 
     @Autowired
     private lateinit var tokenService: TokenService
