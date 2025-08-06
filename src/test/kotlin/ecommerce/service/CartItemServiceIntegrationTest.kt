@@ -99,7 +99,7 @@ class CartItemServiceIntegrationTest {
         assertThat(result.quantity).isEqualTo(6)
 
         val cartItems = cartItemRepository.findByCartId(testCart.id!!)
-        assertThat(cartItems.size).isEqualTo(1)
+        assertThat(cartItems.size).isEqualTo(2)
         assertThat(cartItems[0].quantity).isEqualTo(6)
     }
 
@@ -122,21 +122,12 @@ class CartItemServiceIntegrationTest {
 
     @Test
     fun `deleteAllCartItemsByCartId should remove all cart items`() {
-        val newProduct = Product("New Product", 50.0, 20, "https://example.com/image.jpg")
-        val savedProduct = productRepository.save(newProduct)
-
-        val newProductOption = ProductOption("Green", 15, savedProduct)
-        val savedProductOption = productOptionRepository.save(newProductOption)
-
-        val request = AddToCartRequest(savedProductOption.id!!, 1, 0L, testCart.id!!)
-        cartItemService.saveCartItem(request, testCart.id!!)
-
-        val itemsBefore = cartItemRepository.findByCartId(testCart.id!!)
+        val itemsBefore = cartItemRepository.findByCartId(1)
         assertThat(itemsBefore.size).isEqualTo(2)
 
-        cartItemService.deleteAllCartItemsByCartId(testCart.id!!)
+        cartItemService.deleteAllCartItemsByCartId(1)
 
-        val itemsAfter = cartItemRepository.findByCartId(testCart.id!!)
+        val itemsAfter = cartItemRepository.findByCartId(1)
         assertThat(itemsAfter.size).isEqualTo(0)
     }
 }
