@@ -15,6 +15,16 @@ class ProductTest {
         imageUrl = imageUrl,
     )
 
+    private fun createTestProductInvalid(
+        name: String = "Test Product",
+        imageUrl: String = INVALID_IMAGE_URL,
+    ) = Product(
+        name = name,
+        price = 10.0,
+        quantity = 2,
+        imageUrl = imageUrl,
+    )
+
     @Test
     fun `throw exception - product name can not be empty`() {
         assertThrows<IllegalArgumentException> {
@@ -43,7 +53,7 @@ class ProductTest {
     @Test
     fun `throw exception - image url does not start with allowed url`() {
         assertThrows<IllegalArgumentException> {
-            createTestProduct(name = "TestName", imageUrl = INVALID_IMAGE_URL)
+            createTestProductInvalid(name = "TestName")
         }
     }
 
