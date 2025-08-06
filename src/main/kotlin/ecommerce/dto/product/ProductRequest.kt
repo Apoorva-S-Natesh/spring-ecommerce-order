@@ -1,6 +1,11 @@
 package ecommerce.dto.product
 
-import jakarta.validation.constraints.*
+import jakarta.validation.constraints.Max
+import jakarta.validation.constraints.Min
+import jakarta.validation.constraints.Size
+import jakarta.validation.constraints.NotNull
+import jakarta.validation.constraints.Pattern
+import jakarta.validation.constraints.NotEmpty
 
 data class ProductRequest(
     @field:NotNull(message = "Name must not be blank")
