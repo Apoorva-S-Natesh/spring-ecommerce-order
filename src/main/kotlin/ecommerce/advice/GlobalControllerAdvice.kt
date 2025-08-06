@@ -15,60 +15,50 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 
 @RestControllerAdvice
 class GlobalControllerAdvice {
+    private fun createErrorResponse(
+        exception: Exception,
+        errorCode: String,
+        status: HttpStatus,
+        fieldErrors: List<String>? = null,
+    ): ResponseEntity<ErrorResponse> {
+        val response =
+            ErrorResponse(
+                error = errorCode,
+                message = exception.message!!,
+                fieldErrors = fieldErrors,
+            )
+        return ResponseEntity(response, status)
+    }
 
     @ExceptionHandler(NotFoundException::class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    fun handleNotFoundException(e: NotFoundException): ErrorResponse {
-        return ErrorResponse(
-            error = e.errorCode,
-            message = e.message!!,
-        )
+    fun handleNotFoundException(e: NotFoundException): ResponseEntity<ErrorResponse> {
+        return createErrorResponse(e, e.errorCode, HttpStatus.NOT_FOUND)
     }
 
     @ExceptionHandler(ProductValidationException::class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    fun handleProductValidationException(e: ProductValidationException): ErrorResponse {
-        return ErrorResponse(
-            error = e.errorCode,
-            message = e.message!!,
-            fieldErrors = e.errors,
-        )
+    fun handleProductValidationException(e: ProductValidationException): ResponseEntity<ErrorResponse> {
+        return createErrorResponse(e, e.errorCode, HttpStatus.BAD_REQUEST, e.errors)
     }
 
     @ExceptionHandler(AuthenticationException::class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    fun handleAuthenticationException(e: AuthenticationException): ErrorResponse {
-        return ErrorResponse(
-            error = e.errorCode,
-            message = e.message!!,
-        )
+    fun handleAuthenticationException(e: AuthenticationException): ResponseEntity<ErrorResponse> {
+        return createErrorResponse(e, e.errorCode, HttpStatus.UNAUTHORIZED)
     }
 
+
     @ExceptionHandler(AuthorizationException::class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    fun handleAuthorizationException(e: AuthorizationException): ErrorResponse {
-        return ErrorResponse(
-            error = e.errorCode,
-            message = e.message!!,
-        )
+    fun handleAuthorizationException(e: AuthorizationException): ResponseEntity<ErrorResponse> {
+        return createErrorResponse(e, e.errorCode, HttpStatus.FORBIDDEN)
     }
 
     @ExceptionHandler(DuplicateNameException::class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    fun handleDuplicateNameException(e: DuplicateNameException): ErrorResponse {
-        return ErrorResponse(
-            error = e.errorCode,
-            message = e.message!!,
-        )
+    fun handleDuplicateNameException(e: DuplicateNameException): ResponseEntity<ErrorResponse> {
+        return createErrorResponse(e, e.errorCode, HttpStatus.CONFLICT)
     }
 
     @ExceptionHandler(InsufficientProductOptionsException::class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    fun handleIllegalArgumentException(e: InsufficientProductOptionsException): ErrorResponse {
-        return ErrorResponse(
-            error = e.errorCode,
-            message = e.message!!,
-        )
+    fun handleIllegalArgumentException(e: InsufficientProductOptionsException): ResponseEntity<ErrorResponse> {
+        return createErrorResponse(e, e.errorCode, HttpStatus.BAD_REQUEST)
     }
 
     @ExceptionHandler(IllegalArgumentException::class)
