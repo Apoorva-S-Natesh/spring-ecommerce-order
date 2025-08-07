@@ -1,8 +1,6 @@
 package ecommerce.controller
 
-import ecommerce.dto.auth.AuthenticatedUser
 import ecommerce.model.Cart
-import ecommerce.model.CartItem
 import ecommerce.model.Member
 import ecommerce.model.Role
 import ecommerce.service.CartItemService
