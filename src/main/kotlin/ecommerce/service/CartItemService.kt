@@ -14,7 +14,6 @@ import ecommerce.repository.ProductOptionRepository
 import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-import java.time.LocalDateTime
 
 @Service
 class CartItemService(
@@ -33,11 +32,14 @@ class CartItemService(
         val productOption = findProductOptionById(request.productOptionId)
         val existingCartItem = findExistingCartItem(cartItemId, cart, productOption)
 
-        return if (existingCartItem != null) {
-            updateExistingCartItem(existingCartItem, request, productOption, cart, cartItemId != null)
-        } else {
-            createNewCartItem(cart, productOption, request)
-        }
+        val cartItem =
+            if (existingCartItem != null) {
+                existingCartItem.update(request, productOption, cart, cartItemId != null)
+                existingCartItem
+            } else {
+                CartItem.create(cart, productOption, request)
+            }
+        return cartItemRepository.save(cartItem).toResponse()
     }
 
     private fun findCartById(cartId: Long) =
@@ -54,72 +56,6 @@ class CartItemService(
         productOption: ProductOption,
     ) = cartItemId?.let { cartItemRepository.findByIdOrNull(it) }
         ?: cartItemRepository.findByCartAndProductOption(cart, productOption)
-
-    private fun updateExistingCartItem(
-        existingCartItem: CartItem,
-        request: AddToCartRequest,
-        productOption: ProductOption,
-        cart: Cart,
-        isDirectUpdate: Boolean,
-    ): CartItemResponse {
-        if (isDirectUpdate) {
-            validateQuantityIncrement(request, productOption)
-            updateProductOptionQuantity(productOption, request)
-            updateCartQuantity(cart, request)
-        }
-
-        val newQuantity =
-            if (isDirectUpdate) {
-                request.newProductOptionQuantity
-            } else {
-                existingCartItem.quantity + request.newProductOptionQuantity
-            }
-        existingCartItem.quantity = newQuantity
-        existingCartItem.itemAddedAt = LocalDateTime.now()
-        return cartItemRepository.save(existingCartItem).toResponse()
-    }
-
-    private fun createNewCartItem(
-        cart: Cart,
-        productOption: ProductOption,
-        request: AddToCartRequest,
-    ): CartItemResponse {
-        return cartItemRepository.save(
-            CartItem(
-                cart = cart,
-                productOption = productOption,
-                quantity = request.newProductOptionQuantity,
-                itemAddedAt = LocalDateTime.now(),
-            ),
-        ).toResponse()
-    }
-
-    private fun validateQuantityIncrement(
-        request: AddToCartRequest,
-        productOption: ProductOption,
-    ) {
-        if (request.newProductOptionQuantity <= productOption.quantity) {
-            throw IllegalArgumentException(
-                "New product option quantity (${request.newProductOptionQuantity}) " +
-                    "must be greater than current quantity (${productOption.quantity})",
-            )
-        }
-    }
-
-    private fun updateProductOptionQuantity(
-        productOption: ProductOption,
-        request: AddToCartRequest,
-    ) {
-        productOption.quantity = request.newProductOptionQuantity
-        productOptionRepository.save(productOption)
-    }
-
-    private fun updateCartQuantity(
-        cart: Cart,
-        request: AddToCartRequest,
-    ) {
-        cart.quantity += request.newProductOptionQuantity
-    }
 
     @Transactional
     fun deleteCartItemById(

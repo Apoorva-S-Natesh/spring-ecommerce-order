@@ -1,5 +1,6 @@
 package ecommerce.model
 
+import ecommerce.dto.cart.AddToCartRequest
 import ecommerce.dto.cartItem.CartItemResponse
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -47,4 +48,49 @@ class CartItem(
     }
 
     fun toResponse() = CartItemResponse(id, cart.id, productOption.toResponse(), quantity)
+
+    fun update(
+        request: AddToCartRequest,
+        productOption: ProductOption,
+        cart: Cart,
+        isDirectUpdate: Boolean,
+    ) {
+        validateQuantity(request, productOption)
+        if (isDirectUpdate) {
+            productOption.updateQuantity(request.newProductOptionQuantity)
+            cart.updateQuantity(request.newProductOptionQuantity)
+        } else {
+            cart.updateQuantity(request.newProductOptionQuantity)
+            quantity += request.newProductOptionQuantity
+        }
+        itemAddedAt = LocalDateTime.now()
+    }
+
+    private fun validateQuantity(
+        request: AddToCartRequest,
+        productOption: ProductOption,
+    ) {
+        if (request.newProductOptionQuantity > productOption.quantity) {
+            throw IllegalArgumentException(
+                "Requested quantity (${request.newProductOptionQuantity}) " +
+                    "exceeds available stock (${productOption.quantity})",
+            )
+        }
+    }
+
+    companion object {
+        fun create(
+            cart: Cart,
+            productOption: ProductOption,
+            request: AddToCartRequest,
+        ): CartItem {
+            productOption.validateQuantity(request.newProductOptionQuantity)
+            return CartItem(
+                cart = cart,
+                productOption = productOption,
+                quantity = request.newProductOptionQuantity,
+                itemAddedAt = LocalDateTime.now(),
+            )
+        }
+    }
 }

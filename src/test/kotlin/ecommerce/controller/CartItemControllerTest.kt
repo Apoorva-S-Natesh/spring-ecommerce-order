@@ -36,7 +36,7 @@ class CartItemControllerTest {
         val addToCartRequest =
             AddToCartRequest(
                 productOptionId = 1,
-                newProductOptionQuantity = 7,
+                newProductOptionQuantity = 3,
                 cartItemId = 1,
                 cartId = 1,
             )

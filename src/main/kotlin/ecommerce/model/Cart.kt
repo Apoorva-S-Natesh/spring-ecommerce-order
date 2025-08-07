@@ -45,4 +45,9 @@ class Cart(
             memberId = member?.id,
             cartItem.map { it.toResponse() },
         )
+
+    // Moved from updateCartQuantity
+    fun updateQuantity(quantityIncrement: Int) {
+        quantity += quantityIncrement
+    }
 }

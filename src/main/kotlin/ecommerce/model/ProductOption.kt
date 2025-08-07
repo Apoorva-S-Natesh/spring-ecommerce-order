@@ -40,6 +40,18 @@ class ProductOption(
 
     fun toResponse() = ProductOptionResponse(id, name, product.id)
 
+    fun updateQuantity(newQuantity: Int) {
+        quantity = newQuantity
+    }
+
+    fun validateQuantity(requestedQuantity: Int) {
+        if (requestedQuantity > quantity) {
+            throw IllegalArgumentException(
+                "Requested quantity ($requestedQuantity) exceeds available stock ($quantity)",
+            )
+        }
+    }
+
     companion object {
         private const val MIN_QUANTITY = 1
         private const val MAX_QUANTITY = 99999999
