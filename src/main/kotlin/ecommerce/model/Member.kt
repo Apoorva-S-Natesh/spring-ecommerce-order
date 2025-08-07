@@ -32,13 +32,4 @@ class Member(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
-) {
-    constructor(
-        email: String,
-        name: String,
-    ) : this(
-        email = email,
-        password = "",
-        name = name,
-    )
-}
+)

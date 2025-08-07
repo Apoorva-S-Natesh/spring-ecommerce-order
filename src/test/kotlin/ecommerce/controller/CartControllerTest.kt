@@ -1,6 +1,8 @@
 package ecommerce.controller
 
+import ecommerce.dto.auth.AuthenticatedUser
 import ecommerce.model.Cart
+import ecommerce.model.CartItem
 import ecommerce.model.Member
 import ecommerce.model.Role
 import ecommerce.service.CartItemService
@@ -58,21 +60,21 @@ class CartControllerTest {
         verify(cartService, times(1)).getCartByUserId(userId)
     }
 
-//    @Test
-//    fun `should return cart items when requested`() {
-//        val cartId = 1L
-//        val userId = 1L
-//        val emptyList = emptyList<CartItem>()
-//
-//        `when`(cartItemService.getCartItemsByCartId(cartId, userId)).thenReturn(emptyList)
-//
-//        val result =
-//            cartItemController.getCartItemsByCartId(
-//                cartId,
-//                AuthenticatedUser(userId, Role.USER, "test@email.com", "Test User"),
-//            )
-//
-//        assertEquals(emptyList, result)
-//        verify(cartItemService, times(1)).getCartItemsByCartId(cartId, userId)
-//    }
+    @Test
+    fun `should return cart items when requested`() {
+        val cartId = 1L
+        val userId = 1L
+        val emptyList = emptyList<CartItem>()
+
+        `when`(cartItemService.getCartItemsByCartId(cartId, userId)).thenReturn(emptyList)
+
+        val result =
+            cartItemController.getCartItemsByCartId(
+                cartId,
+                AuthenticatedUser(userId, Role.USER, "test@email.com", "Test User"),
+            )
+
+        assertEquals(emptyList, result)
+        verify(cartItemService, times(1)).getCartItemsByCartId(cartId, userId)
+    }
 }

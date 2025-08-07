@@ -27,13 +27,23 @@ class PasswordService {
         password: String,
         storedHash: String,
     ): Boolean {
-        if (storedHash.startsWith("$2a$") || storedHash.startsWith("$2b$") || storedHash.startsWith("$2y$")) {
-            return verifyBCryptPassword(password, storedHash)
+        return when {
+            storedHash.startsWith("$2a$") || storedHash.startsWith("$2b$") || storedHash.startsWith("$2y$") -> {
+                verifyBCryptPassword(password, storedHash)
+            }
+            storedHash.contains(":") -> {
+                verifyLegacySHA256Password(password, storedHash)
+            }
+            else -> {
+                false
+            }
         }
+    }
 
-        if (!storedHash.contains(":")) {
-            return password == storedHash
-        }
+    private fun verifyLegacySHA256Password(
+        password: String,
+        storedHash: String,
+    ): Boolean {
         val parts = storedHash.split(":")
         if (parts.size != 2) return false
 
