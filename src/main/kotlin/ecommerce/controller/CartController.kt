@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RequestMapping("/api/carts")
@@ -18,9 +19,9 @@ class CartController(
     private val cartService: CartService,
     private val cartItemService: CartItemService,
 ) {
-    @GetMapping("/{userId}")
+    @GetMapping("")
     fun getCart(
-        @PathVariable userId: Long,
+        @RequestParam userId: Long,
     ): Cart {
         return cartService.getCartByUserId(userId)
     }
