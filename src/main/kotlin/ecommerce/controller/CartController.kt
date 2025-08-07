@@ -2,7 +2,6 @@ package ecommerce.controller
 
 import ecommerce.dto.auth.AuthenticatedUser
 import ecommerce.model.Cart
-import ecommerce.model.CartItem
 import ecommerce.service.CartItemService
 import ecommerce.service.CartService
 import org.springframework.http.ResponseEntity
@@ -24,14 +23,6 @@ class CartController(
         @RequestParam userId: Long,
     ): Cart {
         return cartService.getCartByUserId(userId)
-    }
-
-    @GetMapping("/{cartId}/items")
-    fun getAllCartItemsOfCart(
-        @PathVariable cartId: Long,
-        user: AuthenticatedUser,
-    ): List<CartItem> {
-        return cartService.getCartItemsOfCartByCartId(cartId, user.userId)
     }
 
     @DeleteMapping("/{cartId}")

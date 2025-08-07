@@ -11,12 +11,6 @@ interface CartRepository : JpaRepository<Cart, Long> {
     @Query("SELECT c FROM Cart c WHERE c.member.id = :memberId")
     fun findByMemberId(memberId: Long): Cart?
 
-    @Query("SELECT c FROM Cart c WHERE c.id = :cartId AND c.member.id = :memberId")
-    fun findByIdAndMemberId(
-        cartId: Long,
-        memberId: Long,
-    ): Cart?
-
     @Query("SELECT c FROM Cart c JOIN c.cartItem ci WHERE c.member.id = :memberId AND ci.productOption.id = :productOptionId")
     fun findByMemberIdAndCartItemProductOptionId(
         memberId: Long,

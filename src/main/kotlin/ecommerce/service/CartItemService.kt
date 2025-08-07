@@ -1,12 +1,14 @@
 package ecommerce.service
 
 import ecommerce.dto.cart.AddToCartRequest
+import ecommerce.exception.AuthorizationException
 import ecommerce.exception.NotFoundException
 import ecommerce.model.Cart
 import ecommerce.model.CartItem
 import ecommerce.model.ProductOption
 import ecommerce.repository.CartItemRepository
 import ecommerce.repository.CartRepository
+import ecommerce.repository.MemberRepository
 import ecommerce.repository.ProductOptionRepository
 import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
@@ -18,6 +20,7 @@ class CartItemService(
     private val cartRepository: CartRepository,
     private val cartItemRepository: CartItemRepository,
     private val productOptionRepository: ProductOptionRepository,
+    private val memberRepository: MemberRepository,
 ) {
     @Transactional
     fun saveCartItem(
@@ -132,5 +135,14 @@ class CartItemService(
         cartRepository.findByIdOrNull(cartId)
             ?: throw NotFoundException("Cart not found")
         cartItemRepository.deleteAllByCartId(cartId)
+    }
+
+    fun getCartItemsByCartId(
+        cartId: Long,
+        userId: Long,
+    ): List<CartItem> {
+        memberRepository.findByIdOrNull(userId) ?: throw AuthorizationException()
+        cartRepository.findByIdOrNull(cartId) ?: throw NotFoundException("Cart requested not found")
+        return cartItemRepository.findByCartId(cartId)
     }
 }

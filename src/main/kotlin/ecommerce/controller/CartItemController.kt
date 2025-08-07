@@ -6,6 +6,7 @@ import ecommerce.model.CartItem
 import ecommerce.service.CartItemService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
@@ -18,6 +19,14 @@ import org.springframework.web.bind.annotation.RestController
 class CartItemController(
     private val cartItemService: CartItemService,
 ) {
+    @GetMapping("")
+    fun getCartItemsByCartId(
+        @PathVariable cartId: Long,
+        user: AuthenticatedUser,
+    ): List<CartItem> {
+        return cartItemService.getCartItemsByCartId(cartId, user.userId)
+    }
+
     @PostMapping("")
     fun addToCart(
         @PathVariable cartId: Long,

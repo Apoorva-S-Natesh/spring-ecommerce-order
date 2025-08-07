@@ -10,8 +10,8 @@ import ecommerce.model.ProductOption
 import ecommerce.model.Role
 import ecommerce.repository.CartItemRepository
 import ecommerce.repository.CartRepository
+import ecommerce.repository.MemberRepository
 import ecommerce.repository.ProductOptionRepository
-import ecommerce.repository.ProductRepository
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
@@ -35,13 +35,7 @@ class CartItemServiceTest {
     private lateinit var productOptionRepository: ProductOptionRepository
 
     @Mock
-    private lateinit var productRepository: ProductRepository
-
-    @Mock
-    private lateinit var productOptionService: ProductOptionService
-
-    @Mock
-    private lateinit var productService: ProductService
+    private lateinit var memberRepository: MemberRepository
 
     private lateinit var cartItemService: CartItemService
 
@@ -59,6 +53,7 @@ class CartItemServiceTest {
                 cartRepository,
                 cartItemRepository,
                 productOptionRepository,
+                memberRepository,
             )
         testMember = Member("test@example.com", "password", "Test User", Role.USER, id = 1L)
         testCart = Cart(member = testMember, id = 1L)

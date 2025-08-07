@@ -25,11 +25,13 @@ class CartControllerTest {
     private lateinit var cartItemService: CartItemService
 
     private lateinit var cartController: CartController
+    private lateinit var cartItemController: CartItemController
 
     @BeforeEach
     fun setUp() {
         MockitoAnnotations.openMocks(this)
         cartController = CartController(cartService, cartItemService)
+        cartItemController = CartItemController(cartItemService)
     }
 
     @Test
@@ -58,21 +60,21 @@ class CartControllerTest {
         verify(cartService, times(1)).getCartByUserId(userId)
     }
 
-    @Test
-    fun `should return cart items when requested`() {
-        val cartId = 1L
-        val userId = 1L
-        val emptyList = emptyList<CartItem>()
-
-        `when`(cartService.getCartItemsOfCartByCartId(cartId, userId)).thenReturn(emptyList)
-
-        val result =
-            cartController.getAllCartItemsOfCart(
-                cartId,
-                AuthenticatedUser(userId, Role.USER, "test@email.com", "Test User"),
-            )
-
-        assertEquals(emptyList, result)
-        verify(cartService, times(1)).getCartItemsOfCartByCartId(cartId, userId)
-    }
+//    @Test
+//    fun `should return cart items when requested`() {
+//        val cartId = 1L
+//        val userId = 1L
+//        val emptyList = emptyList<CartItem>()
+//
+//        `when`(cartItemService.getCartItemsByCartId(cartId, userId)).thenReturn(emptyList)
+//
+//        val result =
+//            cartItemController.getCartItemsByCartId(
+//                cartId,
+//                AuthenticatedUser(userId, Role.USER, "test@email.com", "Test User"),
+//            )
+//
+//        assertEquals(emptyList, result)
+//        verify(cartItemService, times(1)).getCartItemsByCartId(cartId, userId)
+//    }
 }

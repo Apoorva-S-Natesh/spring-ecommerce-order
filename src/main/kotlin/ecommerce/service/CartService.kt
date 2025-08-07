@@ -3,8 +3,6 @@ package ecommerce.service
 import ecommerce.dto.cart.AddToCartRequest
 import ecommerce.exception.NotFoundException
 import ecommerce.model.Cart
-import ecommerce.model.CartItem
-import ecommerce.repository.CartItemRepository
 import ecommerce.repository.CartRepository
 import ecommerce.repository.MemberRepository
 import ecommerce.repository.ProductOptionRepository
@@ -16,30 +14,12 @@ import kotlin.jvm.optionals.getOrNull
 @Service
 class CartService(
     private val cartRepository: CartRepository,
-    private val cartItemRepository: CartItemRepository,
     private val productOptionRepository: ProductOptionRepository,
     private val memberRepository: MemberRepository,
 ) {
     fun getCartByUserId(userId: Long): Cart {
         return cartRepository.findByMemberId(userId)
             ?: throw NotFoundException("Cart not found for user $userId")
-    }
-
-    fun getCartByIdAndUserId(
-        cartId: Long,
-        userId: Long,
-    ): Cart {
-        return cartRepository.findByIdAndMemberId(cartId, userId)
-            ?: throw NotFoundException("Cart not found or access denied")
-    }
-
-    fun getCartItemsOfCartByCartId(
-        cartId: Long,
-        userId: Long,
-    ): List<CartItem> {
-        cartRepository.findByIdAndMemberId(cartId, userId)
-            ?: throw NotFoundException("Cart requested not found")
-        return cartItemRepository.findByCartId(cartId)
     }
 
     @Transactional
