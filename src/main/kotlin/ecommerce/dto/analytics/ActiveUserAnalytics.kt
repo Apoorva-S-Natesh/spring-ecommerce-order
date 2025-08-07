@@ -1,6 +1,6 @@
 package ecommerce.dto.analytics
 
-data class ActiveUserAnalytics(
+class ActiveUserAnalytics(
     val memberId: Long,
     val memberName: String,
     val memberEmail: String,

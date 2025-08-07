@@ -1,5 +1,6 @@
 package ecommerce.model
 
+import ecommerce.dto.ProductOptionResponse
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -43,4 +44,6 @@ class ProductOption(
         private const val MAX_OPTION_NAME_LENGTH = 50
         private const val ALLOWED_SPECIAL_CHAR = "()[]+-&/_ "
     }
+
+    fun toResponse() = ProductOptionResponse(id, name, product.id)
 }

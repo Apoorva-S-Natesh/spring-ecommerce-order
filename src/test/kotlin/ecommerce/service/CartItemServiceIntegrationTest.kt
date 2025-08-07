@@ -65,8 +65,8 @@ class CartItemServiceIntegrationTest {
 
         assertThat(result).isNotNull()
         assertThat(result.id).isNotNull()
-        assertThat(result.cart.id).isEqualTo(testCart.id)
-        assertThat(result.productOption.id).isEqualTo(testProductOption.id)
+        assertThat(result.cartId).isEqualTo(testCart.id)
+        assertThat(result.productOptionResponse.id).isEqualTo(testProductOption.id)
         assertThat(result.quantity).isEqualTo(4)
 
         val savedItem = cartItemRepository.findById(result.id!!).orElse(null)

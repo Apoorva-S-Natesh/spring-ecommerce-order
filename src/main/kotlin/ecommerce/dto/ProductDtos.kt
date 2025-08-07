@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 
-data class ProductRequest(
+class ProductRequest(
     @field:NotNull(message = "Name must not be blank")
     @field:Size(max = 15, message = "Name must be at most 15 characters")
     @field:Pattern(
@@ -35,7 +35,7 @@ data class ProductRequest(
     val imageUrl: String,
 )
 
-data class ProductOptionRequest(
+class ProductOptionRequest(
     @field:NotNull(message = "Option Name must not be blank")
     @field:Size(max = 50, message = "Name must be at most 50 characters")
     @field:Pattern(
@@ -53,8 +53,16 @@ data class ProductOptionRequest(
     var productId: Long,
 )
 
-data class ProductPatchRequest(
-    val name: String? = null,
-    val price: Double? = null,
-    val imageUrl: String? = null,
+class ProductResponse(
+    val id: Long?,
+    val name: String,
+    val quantity: Int,
+    val price: Double,
+    val imageUrl: String,
+)
+
+class ProductOptionResponse(
+    val id: Long?,
+    val name: String,
+    val productId: Long?,
 )

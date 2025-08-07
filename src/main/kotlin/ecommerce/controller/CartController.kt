@@ -1,7 +1,7 @@
 package ecommerce.controller
 
 import ecommerce.dto.auth.AuthenticatedUser
-import ecommerce.model.Cart
+import ecommerce.dto.cart.CartResponse
 import ecommerce.service.CartItemService
 import ecommerce.service.CartService
 import org.springframework.http.ResponseEntity
@@ -21,7 +21,7 @@ class CartController(
     @GetMapping("")
     fun getCart(
         @RequestParam userId: Long,
-    ): Cart {
+    ): CartResponse {
         return cartService.getCartByUserId(userId)
     }
 

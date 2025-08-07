@@ -1,6 +1,6 @@
 package ecommerce.model
 
-import com.fasterxml.jackson.annotation.JsonIgnore
+import ecommerce.dto.cart.CartResponse
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -21,7 +21,6 @@ class Cart(
     @JoinColumn(name = "member_id", nullable = true)
     val member: Member? = null,
     @OneToMany(mappedBy = "cart", cascade = [CascadeType.ALL], fetch = FetchType.LAZY, orphanRemoval = true)
-    @JsonIgnore
     val cartItem: MutableList<CartItem> = mutableListOf(),
     @Column(name = "quantity", nullable = false)
     var quantity: Int = 0,
@@ -37,4 +36,13 @@ class Cart(
         quantity = 0,
         newItemAddedAt = LocalDateTime.now(),
     )
+
+    fun toResponse() =
+        CartResponse(
+            id = id ?: throw IllegalStateException("Cart ID cannot be null"),
+            quantity = quantity,
+            newItemAddedAt = newItemAddedAt,
+            memberId = member?.id,
+            cartItem.map { it.toResponse() },
+        )
 }

@@ -2,8 +2,12 @@ package ecommerce.controller
 
 import ecommerce.dto.auth.AuthenticatedUser
 import ecommerce.dto.cart.AddToCartRequest
+import ecommerce.model.Cart
+import ecommerce.model.Member
 import ecommerce.model.Role
 import ecommerce.repository.CartItemRepository
+import ecommerce.repository.CartRepository
+import ecommerce.repository.MemberRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,6 +24,12 @@ class CartItemControllerTest {
 
     @Autowired
     private lateinit var cartItemRepository: CartItemRepository
+
+    @Autowired
+    private lateinit var memberRepository: MemberRepository
+
+    @Autowired
+    private lateinit var cartRepository: CartRepository
 
     @Test
     fun `cart item should be updated to cart`() {
@@ -65,27 +75,40 @@ class CartItemControllerTest {
     @Test
     @Sql(statements = ["DELETE FROM cart_items"])
     fun `cart item should be added to cart`() {
+        // Seed test data
+        val member =
+            memberRepository.save(
+                Member(
+                    "test3@example.com",
+                    "\$2a\$10\$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.",
+                    "Test User3",
+                    Role.USER,
+                    null,
+                ),
+            )
+        val cart = cartRepository.save(Cart(member))
+
         val addToCartRequest =
             AddToCartRequest(
                 productOptionId = 2,
                 newProductOptionQuantity = 7,
-                cartItemId = 3,
-                cartId = 1,
+                cartItemId = null,
+                cartId = cart.id!!,
             )
 
         val response =
             cartItemController.addToCart(
-                1,
+                3,
                 addToCartRequest,
-                AuthenticatedUser(1, Role.USER, "test@example.com", "Test User"),
+                AuthenticatedUser(member.id!!, Role.USER, "test@example.com", "Test User"),
             )
 
         assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
         assertThat(response.body).isNotNull
         assertThat(response.body?.quantity).isEqualTo(7)
-        assertThat(response.body?.productOption?.id).isEqualTo(2)
-        assertThat(response.body?.productOption?.name).isEqualTo("Red")
-        assertThat(response.body?.cart?.id).isEqualTo(1)
+        assertThat(response.body?.productOptionResponse?.id).isEqualTo(2)
+        assertThat(response.body?.productOptionResponse?.name).isEqualTo("Red")
+        assertThat(response.body?.cartId).isEqualTo(cart.id)
 
         val savedCartItem = cartItemRepository.findById(response.body?.id!!)
         assertThat(savedCartItem).isPresent

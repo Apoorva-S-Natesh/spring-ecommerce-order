@@ -1,6 +1,7 @@
 package ecommerce.service
 
 import ecommerce.dto.ProductOptionRequest
+import ecommerce.dto.ProductOptionResponse
 import ecommerce.exception.DuplicateNameException
 import ecommerce.exception.NotFoundException
 import ecommerce.model.ProductOption
@@ -20,7 +21,7 @@ class ProductOptionService(
         productId: Long,
         request: ProductOptionRequest,
         productOptionId: Long? = null,
-    ): ProductOption {
+    ): ProductOptionResponse {
         if (!productRepository.existsById(productId)) {
             throw NotFoundException("Product does not exist")
         }
@@ -36,7 +37,7 @@ class ProductOptionService(
                     quantity = request.quantity,
                     product = product,
                 )
-            return productOptionRepository.save(updatedOption)
+            return productOptionRepository.save(updatedOption).toResponse()
         } else {
             if (productOptionRepository.existsByName(request.name)) {
                 throw DuplicateNameException("Product option name in this product already exists")
@@ -47,7 +48,7 @@ class ProductOptionService(
                     quantity = request.quantity,
                     product = product,
                 )
-            return productOptionRepository.save(newOption)
+            return productOptionRepository.save(newOption).toResponse()
         }
     }
 

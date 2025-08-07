@@ -1,9 +1,10 @@
 package ecommerce.controller
 
 import ecommerce.dto.ProductOptionRequest
+import ecommerce.dto.ProductOptionResponse
 import ecommerce.dto.ProductRequest
+import ecommerce.dto.ProductResponse
 import ecommerce.model.Product
-import ecommerce.model.ProductOption
 import ecommerce.service.ProductOptionService
 import ecommerce.service.ProductService
 import jakarta.validation.Valid
@@ -38,7 +39,7 @@ class AdminController(private val productService: ProductService, private val pr
     @PostMapping("")
     fun createProduct(
         @Valid @RequestBody productRequest: ProductRequest,
-    ): ResponseEntity<Product> {
+    ): ResponseEntity<ProductResponse> {
         val saved = productService.createProduct(productRequest)
         return ResponseEntity.created(URI.create("/api/products/${saved.id}")).body(saved)
     }
@@ -47,7 +48,7 @@ class AdminController(private val productService: ProductService, private val pr
     fun updateProduct(
         @Valid @RequestBody productRequest: ProductRequest,
         @PathVariable id: Long,
-    ): ResponseEntity<Product> {
+    ): ResponseEntity<ProductResponse> {
         val updated = productService.updateProduct(id, productRequest)
         return ResponseEntity.ok(updated)
     }
@@ -64,7 +65,7 @@ class AdminController(private val productService: ProductService, private val pr
     fun addProductOption(
         @PathVariable productId: Long,
         @Valid @RequestBody productOptionRequest: ProductOptionRequest,
-    ): ResponseEntity<ProductOption> {
+    ): ResponseEntity<ProductOptionResponse> {
         val saved = productOptionService.saveProductOption(productId, productOptionRequest)
         return ResponseEntity
             .created(URI.create("/$productId/options/${saved.id}"))
@@ -76,7 +77,7 @@ class AdminController(private val productService: ProductService, private val pr
         @PathVariable productId: Long,
         @PathVariable optionId: Long,
         @RequestBody productOptionRequest: ProductOptionRequest,
-    ): ResponseEntity<ProductOption> {
+    ): ResponseEntity<ProductOptionResponse> {
         val updated = productOptionService.saveProductOption(productId, productOptionRequest, optionId)
         return ResponseEntity
             .ok()

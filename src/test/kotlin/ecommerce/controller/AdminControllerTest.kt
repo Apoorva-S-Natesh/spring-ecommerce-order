@@ -289,7 +289,6 @@ class AdminControllerTest {
             status { isCreated() }
             header { exists("Location") }
             jsonPath("$.name") { value("Red Color") }
-            jsonPath("$.quantity") { value(5) }
             jsonPath("$.id") { exists() }
         }
     }
@@ -464,7 +463,6 @@ class AdminControllerTest {
         }.andExpect {
             status { isOk() }
             jsonPath("$.name") { value("Green Color") }
-            jsonPath("$.quantity") { value(8) }
             jsonPath("$.id") { value(optionId) }
         }
     }

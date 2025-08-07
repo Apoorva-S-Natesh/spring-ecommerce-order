@@ -2,7 +2,7 @@ package ecommerce.dto.auth
 
 import ecommerce.model.Role
 
-data class AuthenticatedUser(
+class AuthenticatedUser(
     val userId: Long,
     val role: Role,
     val email: String,

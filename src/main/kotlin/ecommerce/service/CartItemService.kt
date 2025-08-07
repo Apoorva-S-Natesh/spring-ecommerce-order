@@ -1,6 +1,7 @@
 package ecommerce.service
 
 import ecommerce.dto.cart.AddToCartRequest
+import ecommerce.dto.cartItem.CartItemResponse
 import ecommerce.exception.AuthorizationException
 import ecommerce.exception.NotFoundException
 import ecommerce.model.Cart
@@ -27,7 +28,7 @@ class CartItemService(
         request: AddToCartRequest,
         cartId: Long,
         cartItemId: Long? = null,
-    ): CartItem {
+    ): CartItemResponse {
         val cart = findCartById(cartId)
         val productOption = findProductOptionById(request.productOptionId)
         val existingCartItem = findExistingCartItem(cartItemId, cart, productOption)
@@ -60,7 +61,7 @@ class CartItemService(
         productOption: ProductOption,
         cart: Cart,
         isDirectUpdate: Boolean,
-    ): CartItem {
+    ): CartItemResponse {
         if (isDirectUpdate) {
             validateQuantityIncrement(request, productOption)
             updateProductOptionQuantity(productOption, request)
@@ -75,21 +76,23 @@ class CartItemService(
             }
         existingCartItem.quantity = newQuantity
         existingCartItem.itemAddedAt = LocalDateTime.now()
-        return cartItemRepository.save(existingCartItem)
+        return cartItemRepository.save(existingCartItem).toResponse()
     }
 
     private fun createNewCartItem(
         cart: Cart,
         productOption: ProductOption,
         request: AddToCartRequest,
-    ) = cartItemRepository.save(
-        CartItem(
-            cart = cart,
-            productOption = productOption,
-            quantity = request.newProductOptionQuantity,
-            itemAddedAt = LocalDateTime.now(),
-        ),
-    )
+    ): CartItemResponse {
+        return cartItemRepository.save(
+            CartItem(
+                cart = cart,
+                productOption = productOption,
+                quantity = request.newProductOptionQuantity,
+                itemAddedAt = LocalDateTime.now(),
+            ),
+        ).toResponse()
+    }
 
     private fun validateQuantityIncrement(
         request: AddToCartRequest,
@@ -140,9 +143,9 @@ class CartItemService(
     fun getCartItemsByCartId(
         cartId: Long,
         userId: Long,
-    ): List<CartItem> {
+    ): List<CartItemResponse> {
         memberRepository.findByIdOrNull(userId) ?: throw AuthorizationException()
         cartRepository.findByIdOrNull(cartId) ?: throw NotFoundException("Cart requested not found")
-        return cartItemRepository.findByCartId(cartId)
+        return cartItemRepository.findByCartId(cartId).map { it.toResponse() }
     }
 }

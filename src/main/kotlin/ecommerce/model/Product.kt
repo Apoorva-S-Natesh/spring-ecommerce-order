@@ -1,5 +1,6 @@
 package ecommerce.model
 
+import ecommerce.dto.ProductResponse
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
@@ -32,4 +33,6 @@ class Product(
         private const val MAX_NAME_LENGTH = 15
         private const val ALLOWED_SPECIAL_CHAR = "()[]+-&/_ "
     }
+
+    fun toResponse() = ProductResponse(id, name, quantity, price, imageUrl)
 }

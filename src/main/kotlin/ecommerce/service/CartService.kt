@@ -1,6 +1,7 @@
 package ecommerce.service
 
 import ecommerce.dto.cart.AddToCartRequest
+import ecommerce.dto.cart.CartResponse
 import ecommerce.exception.NotFoundException
 import ecommerce.model.Cart
 import ecommerce.repository.CartRepository
@@ -17,16 +18,18 @@ class CartService(
     private val productOptionRepository: ProductOptionRepository,
     private val memberRepository: MemberRepository,
 ) {
-    fun getCartByUserId(userId: Long): Cart {
-        return cartRepository.findByMemberId(userId)
-            ?: throw NotFoundException("Cart not found for user $userId")
+    fun getCartByUserId(userId: Long): CartResponse {
+        val cart =
+            cartRepository.findByMemberId(userId)
+                ?: throw NotFoundException("Cart not found for user $userId")
+        return cart.toResponse()
     }
 
     @Transactional
     fun addToCart(
         userId: Long,
         request: AddToCartRequest,
-    ): Cart {
+    ): CartResponse {
         productOptionRepository.findById(request.productOptionId).getOrNull()
             ?: throw NotFoundException("Product option not found")
         val existingCart = cartRepository.findByMemberIdAndCartItemProductOptionId(userId, request.productOptionId)
@@ -39,7 +42,7 @@ class CartService(
                     newItemAddedAt = LocalDateTime.now(),
                     id = existingCart.id,
                 )
-            cartRepository.save(updatedCart)
+            cartRepository.save(updatedCart).toResponse()
         } else {
             val member =
                 memberRepository.findById(userId).getOrNull()
@@ -51,7 +54,7 @@ class CartService(
                     quantity = request.newProductOptionQuantity,
                     newItemAddedAt = LocalDateTime.now(),
                 )
-            cartRepository.save(newCart)
+            cartRepository.save(newCart).toResponse()
         }
     }
 
@@ -65,7 +68,7 @@ class CartService(
         userId: Long,
         productOptionId: Long,
         request: ecommerce.dto.cart.UpdateQuantityRequest,
-    ): Cart {
+    ): CartResponse {
         productOptionRepository.findById(productOptionId).getOrNull()
             ?: throw NotFoundException("Product option not found")
 
@@ -81,6 +84,6 @@ class CartService(
                 newItemAddedAt = LocalDateTime.now(),
                 id = existingCart.id,
             )
-        return cartRepository.save(updatedCart)
+        return cartRepository.save(updatedCart).toResponse()
     }
 }

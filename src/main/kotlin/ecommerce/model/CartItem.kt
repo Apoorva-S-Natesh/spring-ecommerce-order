@@ -1,5 +1,6 @@
 package ecommerce.model
 
+import ecommerce.dto.cartItem.CartItemResponse
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -28,4 +29,6 @@ class CartItem(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
-)
+) {
+    fun toResponse() = CartItemResponse(id, cart.id, productOption.toResponse(), quantity)
+}

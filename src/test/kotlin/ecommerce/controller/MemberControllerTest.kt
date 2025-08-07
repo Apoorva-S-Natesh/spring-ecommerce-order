@@ -42,7 +42,6 @@ class MemberControllerTest {
             jsonPath("$.id") { value(1) }
             jsonPath("$.email") { value("test@example.com") }
             jsonPath("$.name") { value("Test User") }
-            jsonPath("$.role") { value("USER") }
         }
     }
 
@@ -59,12 +58,10 @@ class MemberControllerTest {
             jsonPath("$.content[0].id") { value(1) }
             jsonPath("$.content[0].email") { value("test@example.com") }
             jsonPath("$.content[0].name") { value("Test User") }
-            jsonPath("$.content[0].role") { value("USER") }
 
             jsonPath("$.content[1].id") { value(2) }
             jsonPath("$.content[1].email") { value("admin@example.com") }
             jsonPath("$.content[1].name") { value("Admin User") }
-            jsonPath("$.content[1].role") { value("ADMIN") }
         }
     }
 
@@ -85,7 +82,6 @@ class MemberControllerTest {
             jsonPath("$.id") { value(1) }
             jsonPath("$.email") { value("updated@email.com") }
             jsonPath("$.name") { value("Updated User") }
-            jsonPath("$.role") { value("USER") }
         }
     }
 

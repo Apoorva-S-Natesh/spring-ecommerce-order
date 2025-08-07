@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size
 
-data class RegisterRequest(
+class RegisterRequest(
     @field:Email(message = "Invalid email format")
     @field:NotBlank(message = "Email must not be blank")
     val email: String,

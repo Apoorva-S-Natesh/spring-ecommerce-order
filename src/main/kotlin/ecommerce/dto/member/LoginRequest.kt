@@ -3,7 +3,7 @@ package ecommerce.dto.member
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 
-data class LoginRequest(
+class LoginRequest(
     @field:Email(message = "Email format is invalid")
     @field:NotBlank(message = "Email must not be blank")
     val email: String,

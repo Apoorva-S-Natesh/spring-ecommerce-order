@@ -2,7 +2,7 @@ package ecommerce.controller
 
 import ecommerce.dto.auth.AuthenticatedUser
 import ecommerce.dto.cart.AddToCartRequest
-import ecommerce.model.CartItem
+import ecommerce.dto.cartItem.CartItemResponse
 import ecommerce.service.CartItemService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -23,7 +23,7 @@ class CartItemController(
     fun getCartItemsByCartId(
         @PathVariable cartId: Long,
         user: AuthenticatedUser,
-    ): List<CartItem> {
+    ): List<CartItemResponse> {
         return cartItemService.getCartItemsByCartId(cartId, user.userId)
     }
 
@@ -32,7 +32,7 @@ class CartItemController(
         @PathVariable cartId: Long,
         @RequestBody request: AddToCartRequest,
         user: AuthenticatedUser,
-    ): ResponseEntity<CartItem> {
+    ): ResponseEntity<CartItemResponse> {
         val cartItem = cartItemService.saveCartItem(request, cartId)
         return ResponseEntity.ok(cartItem)
     }
@@ -43,7 +43,7 @@ class CartItemController(
         @PathVariable cartId: Long,
         @RequestBody request: AddToCartRequest,
         user: AuthenticatedUser,
-    ): ResponseEntity<CartItem> {
+    ): ResponseEntity<CartItemResponse> {
         val updatedItem = cartItemService.saveCartItem(request, itemId, cartId)
         return ResponseEntity.ok(updatedItem)
     }

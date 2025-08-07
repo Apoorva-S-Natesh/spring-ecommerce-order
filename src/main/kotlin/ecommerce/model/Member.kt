@@ -1,6 +1,7 @@
 package ecommerce.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import ecommerce.dto.member.MemberResponse
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
@@ -25,11 +26,19 @@ class Member(
     @Column(name = "role", nullable = false)
     @Enumerated(EnumType.STRING)
     val role: Role = Role.USER,
-    @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cart_id", nullable = true)
+    @JsonIgnore
     var cart: Cart? = null,
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
-)
+) {
+    fun toResponse() =
+        MemberResponse(
+            id = id ?: throw IllegalStateException("Member ID cannot be null"),
+            email = email,
+            name = name,
+            cartId = cart?.id,
+        )
+}
