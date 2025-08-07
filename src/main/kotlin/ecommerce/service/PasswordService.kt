@@ -1,5 +1,6 @@
 package ecommerce.service
 
+import org.mindrot.jbcrypt.BCrypt
 import org.springframework.stereotype.Service
 import java.security.MessageDigest
 import java.security.SecureRandom
@@ -10,6 +11,11 @@ class PasswordService {
     private val secureRandom = SecureRandom()
 
     fun hashPassword(password: String): String {
+        return BCrypt.hashpw(password, BCrypt.gensalt())
+    }
+
+    @Deprecated("Legacy method - kept for backward compatibility with existing SHA-256 hashes")
+    fun hashPasswordLegacy(password: String): String {
         val salt = ByteArray(16)
         secureRandom.nextBytes(salt)
         val saltedPassword = password + Base64.getEncoder().encodeToString(salt)
@@ -22,7 +28,7 @@ class PasswordService {
         storedHash: String,
     ): Boolean {
         if (storedHash.startsWith("$2a$") || storedHash.startsWith("$2b$") || storedHash.startsWith("$2y$")) {
-            return password == "secret" && storedHash == "\$2a\$10\$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi."
+            return verifyBCryptPassword(password, storedHash)
         }
 
         if (!storedHash.contains(":")) {
@@ -38,5 +44,12 @@ class PasswordService {
         val actualHash = Base64.getEncoder().encodeToString(hashedBytes)
 
         return actualHash == expectedHash
+    }
+
+    private fun verifyBCryptPassword(
+        password: String,
+        storedHash: String,
+    ): Boolean {
+        return BCrypt.checkpw(password, storedHash)
     }
 }
