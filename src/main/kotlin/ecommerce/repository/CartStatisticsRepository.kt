@@ -5,10 +5,8 @@ import ecommerce.dto.analytics.TopProductAnalytics
 import ecommerce.model.CartStatistics
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
-import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
 
-@Repository
 interface CartStatisticsRepository : JpaRepository<CartStatistics, Long> {
     @Query(
         """
