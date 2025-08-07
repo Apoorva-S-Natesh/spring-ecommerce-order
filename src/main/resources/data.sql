@@ -11,14 +11,16 @@ INSERT INTO product_options (name, quantity, product_id) VALUES
                                                              ('Yellow', 10, 2);
 
 --  admin pw: secret
-INSERT INTO members (id, email, password, name, role) VALUES
-    (1, 'test@example.com', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.', 'Test User', 'USER'),
-    (2, 'admin@example.com', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.', 'Admin User', 'ADMIN'),
-    (3, 'test2@example.com', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.', 'Test User2', 'USER');
+INSERT INTO members (email, password, name, role) VALUES
+    ('test@example.com', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.', 'Test User', 'USER'),
+    ('admin@example.com', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.', 'Admin User', 'ADMIN'),
+    ('test2@example.com', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.', 'Test User2', 'USER');
 
 INSERT INTO carts (member_id, quantity, updated_at) VALUES
     (1, 1, TIMESTAMP '2025-07-25 08:00:00.000'),
     (3, 2, TIMESTAMP '2025-08-05 08:00:00.000');
+
+UPDATE members SET cart_id = (SELECT id FROM carts WHERE member_id = members.id) WHERE email IN ('test@example.com', 'test2@example.com');
 
 INSERT INTO cart_items (cart_id, product_option_id, quantity, updated_at) VALUES
   (1, 1, 1,TIMESTAMP '2025-07-25 08:00:00.000'),

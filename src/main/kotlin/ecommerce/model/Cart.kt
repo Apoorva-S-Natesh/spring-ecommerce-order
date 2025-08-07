@@ -31,13 +31,6 @@ class Cart(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
 ) {
-    constructor() : this(
-        member = null,
-        cartItem = mutableListOf(),
-        quantity = 0,
-        newItemAddedAt = LocalDateTime.now(),
-    )
-
     constructor(member: Member) : this(
         member = member,
         cartItem = mutableListOf(),
