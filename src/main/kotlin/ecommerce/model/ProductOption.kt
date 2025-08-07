@@ -38,12 +38,12 @@ class ProductOption(
         this.quantity -= quantity
     }
 
+    fun toResponse() = ProductOptionResponse(id, name, product.id)
+
     companion object {
         private const val MIN_QUANTITY = 1
         private const val MAX_QUANTITY = 99999999
         private const val MAX_OPTION_NAME_LENGTH = 50
         private const val ALLOWED_SPECIAL_CHAR = "()[]+-&/_ "
     }
-
-    fun toResponse() = ProductOptionResponse(id, name, product.id)
 }

@@ -41,4 +41,9 @@ class Member(
             name = name,
             cartId = cart?.id,
         )
+
+    fun assignCart(cart: Cart) {
+        if (cart.member != this) throw IllegalArgumentException("Cart must be associated with this member")
+        this.cart = cart
+    }
 }

@@ -31,8 +31,8 @@ class MemberService(
         val hashedPassword = passwordService.hashPassword(request.password)
         val member = request.toModel(hashedPassword)
 
-        val cart = Cart(member = member)
-        member.cart = cartRepository.save(cart)
+        val savedCart = Cart(member = member)
+        member.assignCart(savedCart)
         val savedMember = memberRepository.save(member)
         return tokenService.generateToken(savedMember)
     }

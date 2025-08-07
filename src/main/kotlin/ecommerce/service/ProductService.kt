@@ -10,7 +10,6 @@ import ecommerce.model.ProductOption
 import ecommerce.repository.ProductOptionRepository
 import ecommerce.repository.ProductRepository
 import ecommerce.util.toModel
-import ecommerce.util.toResponse
 import jakarta.transaction.Transactional
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
@@ -67,7 +66,7 @@ class ProductService(
     }
 
     fun deleteById(id: Long) {
-        productOptionRepository.deleteProductOptionsByProductId(id)
+        productOptionRepository.deleteByProductId(id)
         productRepository.deleteById(id)
     }
 }

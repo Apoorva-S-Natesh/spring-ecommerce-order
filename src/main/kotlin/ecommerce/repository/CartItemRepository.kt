@@ -17,6 +17,5 @@ interface CartItemRepository : JpaRepository<CartItem, Long> {
     fun findByCartId(cartId: Long): List<CartItem>
 
     @Modifying
-    @Query("DELETE FROM CartItem ci WHERE ci.cart.id = :cartId")
-    fun deleteAllByCartId(cartId: Long)
+    fun deleteByCartId(cartId: Long)
 }
