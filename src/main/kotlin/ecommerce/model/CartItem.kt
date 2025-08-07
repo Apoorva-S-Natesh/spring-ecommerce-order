@@ -12,6 +12,7 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import java.time.LocalDateTime
+import java.util.Objects
 
 @Entity
 @Table(name = "cart_items")
@@ -30,5 +31,20 @@ class CartItem(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
 ) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is CartItem) return false
+
+        if (id == null || other.id == null) {
+            return cart == other.cart && productOption == other.productOption
+        }
+
+        return id == other.id
+    }
+
+    override fun hashCode(): Int {
+        return Objects.hash(cart.id, productOption.id)
+    }
+
     fun toResponse() = CartItemResponse(id, cart.id, productOption.toResponse(), quantity)
 }
