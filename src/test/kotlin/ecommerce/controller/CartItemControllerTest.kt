@@ -75,7 +75,6 @@ class CartItemControllerTest {
     @Test
     @Sql(statements = ["DELETE FROM cart_items"])
     fun `cart item should be added to cart`() {
-        // Seed test data
         val member =
             memberRepository.save(
                 Member(

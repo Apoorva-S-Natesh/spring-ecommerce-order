@@ -30,13 +30,6 @@ class Cart(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
 ) {
-    constructor(member: Member) : this(
-        member = member,
-        cartItem = mutableListOf(),
-        quantity = 0,
-        newItemAddedAt = LocalDateTime.now(),
-    )
-
     fun toResponse() =
         CartResponse(
             id = id ?: throw IllegalStateException("Cart ID cannot be null"),
