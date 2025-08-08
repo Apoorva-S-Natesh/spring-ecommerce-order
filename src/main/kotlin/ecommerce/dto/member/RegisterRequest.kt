@@ -1,5 +1,6 @@
 package ecommerce.dto.member
 
+import ecommerce.model.Member
 import ecommerce.model.Role
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
@@ -16,4 +17,6 @@ class RegisterRequest(
     @field:NotBlank(message = "Name must not be blank")
     val name: String,
     val role: Role = Role.USER,
-)
+) {
+    fun toModel(hashedPassword: String) = Member(email, hashedPassword, name, role)
+}

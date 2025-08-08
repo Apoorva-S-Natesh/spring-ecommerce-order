@@ -1,5 +1,6 @@
 package ecommerce.dto
 
+import ecommerce.model.Product
 import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.NotEmpty
@@ -33,7 +34,9 @@ class ProductRequest(
         message = "url must begin with http:// or https://",
     )
     val imageUrl: String,
-)
+) {
+    fun toModel(id: Long? = null) = Product(name, price, quantity, imageUrl, id)
+}
 
 class ProductOptionRequest(
     @field:NotNull(message = "Option Name must not be blank")

@@ -9,7 +9,6 @@ import ecommerce.model.Product
 import ecommerce.model.ProductOption
 import ecommerce.repository.ProductOptionRepository
 import ecommerce.repository.ProductRepository
-import ecommerce.util.toModel
 import jakarta.transaction.Transactional
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
@@ -43,7 +42,7 @@ class ProductService(
         if (request.productOptions.isEmpty()) {
             throw InsufficientProductOptionsException("Product needs at least one option")
         }
-        var product = request.toModel()
+        val product = request.toModel()
         val savedProduct = productRepository.save(product)
 
         request.productOptions.forEach { option ->

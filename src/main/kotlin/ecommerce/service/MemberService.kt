@@ -6,9 +6,7 @@ import ecommerce.exception.AuthenticationException
 import ecommerce.exception.NotFoundException
 import ecommerce.model.Cart
 import ecommerce.model.Member
-import ecommerce.repository.CartRepository
 import ecommerce.repository.MemberRepository
-import ecommerce.util.toModel
 import jakarta.transaction.Transactional
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
@@ -21,7 +19,6 @@ class MemberService(
     private val memberRepository: MemberRepository,
     private val passwordService: PasswordService,
     private val tokenService: TokenService,
-    private val cartRepository: CartRepository,
 ) {
     @Transactional
     fun register(request: RegisterRequest): String {
