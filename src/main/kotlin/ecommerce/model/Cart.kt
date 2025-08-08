@@ -1,6 +1,5 @@
 package ecommerce.model
 
-import ecommerce.dto.cart.CartResponse
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -30,15 +29,6 @@ class Cart(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
 ) {
-    fun toResponse() =
-        CartResponse(
-            id = id ?: throw IllegalStateException("Cart ID cannot be null"),
-            quantity = quantity,
-            newItemAddedAt = newItemAddedAt,
-            memberId = member?.id,
-            cartItem.map { it.toResponse() },
-        )
-
     fun updateQuantity(quantityIncrement: Int) {
         quantity += quantityIncrement
     }

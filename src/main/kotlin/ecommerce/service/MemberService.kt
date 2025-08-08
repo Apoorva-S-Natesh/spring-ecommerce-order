@@ -1,5 +1,6 @@
 package ecommerce.service
 
+import ecommerce.dto.member.MemberResponse
 import ecommerce.dto.member.RegisterRequest
 import ecommerce.dto.member.UpdateRequest
 import ecommerce.exception.AuthenticationException
@@ -7,6 +8,7 @@ import ecommerce.exception.NotFoundException
 import ecommerce.model.Cart
 import ecommerce.model.Member
 import ecommerce.repository.MemberRepository
+import ecommerce.utils.ResponseMapper.memberToResponse
 import jakarta.transaction.Transactional
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
@@ -49,9 +51,11 @@ class MemberService(
         return tokenService.generateToken(member)
     }
 
-    fun getMemberById(id: Long): Member {
-        return memberRepository.findByIdOrNull(id)
-            ?: throw NotFoundException("Member with id $id not found")
+    fun getMemberById(id: Long): MemberResponse {
+        val member =
+            memberRepository.findByIdOrNull(id)
+                ?: throw NotFoundException("Member with id $id not found")
+        return memberToResponse(member)
     }
 
     fun updateMemberById(

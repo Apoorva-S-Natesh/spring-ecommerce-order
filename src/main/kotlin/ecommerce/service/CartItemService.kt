@@ -11,6 +11,7 @@ import ecommerce.repository.CartItemRepository
 import ecommerce.repository.CartRepository
 import ecommerce.repository.MemberRepository
 import ecommerce.repository.ProductOptionRepository
+import ecommerce.utils.ResponseMapper.cartItemToResponse
 import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -39,7 +40,7 @@ class CartItemService(
             } else {
                 CartItem.create(cart, productOption, request)
             }
-        return cartItemRepository.save(cartItem).toResponse()
+        return cartItemToResponse(cartItemRepository.save(cartItem))
     }
 
     private fun findCartById(cartId: Long) =
@@ -82,6 +83,6 @@ class CartItemService(
     ): List<CartItemResponse> {
         memberRepository.findByIdOrNull(userId) ?: throw AuthorizationException()
         cartRepository.findByIdOrNull(cartId) ?: throw NotFoundException("Cart requested not found")
-        return cartItemRepository.findByCartId(cartId).map { it.toResponse() }
+        return cartItemRepository.findByCartId(cartId).map { cartItemToResponse(it) }
     }
 }

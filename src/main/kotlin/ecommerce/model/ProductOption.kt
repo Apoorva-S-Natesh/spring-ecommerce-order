@@ -1,6 +1,5 @@
 package ecommerce.model
 
-import ecommerce.dto.ProductOptionResponse
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -37,8 +36,6 @@ class ProductOption(
         if (quantity > this.quantity) throw IllegalArgumentException("Quantity can not be greater than stock of product quantity")
         this.quantity -= quantity
     }
-
-    fun toResponse() = ProductOptionResponse(id, name, product.id)
 
     fun updateQuantity(newQuantity: Int) {
         quantity = newQuantity

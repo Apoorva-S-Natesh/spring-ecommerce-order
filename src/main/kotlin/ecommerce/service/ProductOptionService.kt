@@ -7,6 +7,7 @@ import ecommerce.exception.NotFoundException
 import ecommerce.model.ProductOption
 import ecommerce.repository.ProductOptionRepository
 import ecommerce.repository.ProductRepository
+import ecommerce.utils.ResponseMapper.productOptionToResponse
 import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -37,7 +38,7 @@ class ProductOptionService(
                     quantity = request.quantity,
                     product = product,
                 )
-            return productOptionRepository.save(updatedOption).toResponse()
+            return productOptionToResponse(productOptionRepository.save(updatedOption))
         } else {
             if (productOptionRepository.existsByName(request.name)) {
                 throw DuplicateNameException("Product option name in this product already exists")
@@ -48,7 +49,7 @@ class ProductOptionService(
                     quantity = request.quantity,
                     product = product,
                 )
-            return productOptionRepository.save(newOption).toResponse()
+            return productOptionToResponse(productOptionRepository.save(newOption))
         }
     }
 

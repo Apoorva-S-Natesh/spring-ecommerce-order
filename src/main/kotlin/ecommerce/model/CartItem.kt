@@ -1,7 +1,6 @@
 package ecommerce.model
 
 import ecommerce.dto.cart.AddToCartRequest
-import ecommerce.dto.cartItem.CartItemResponse
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -46,8 +45,6 @@ class CartItem(
     override fun hashCode(): Int {
         return Objects.hash(cart.id, productOption.id)
     }
-
-    fun toResponse() = CartItemResponse(id, cart.id, productOption.toResponse(), quantity)
 
     fun update(
         request: AddToCartRequest,

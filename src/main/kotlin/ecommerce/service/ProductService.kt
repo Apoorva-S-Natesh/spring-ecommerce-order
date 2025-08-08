@@ -9,6 +9,7 @@ import ecommerce.model.Product
 import ecommerce.model.ProductOption
 import ecommerce.repository.ProductOptionRepository
 import ecommerce.repository.ProductRepository
+import ecommerce.utils.ResponseMapper.productToResponse
 import jakarta.transaction.Transactional
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
@@ -49,7 +50,7 @@ class ProductService(
             option.productId = savedProduct.id!!
             productOptionRepository.save(ProductOption(option.name, option.quantity, product))
         }
-        return savedProduct.toResponse()
+        return productToResponse(savedProduct)
     }
 
     @Transactional
@@ -61,7 +62,7 @@ class ProductService(
             throw NotFoundException("Product with id $id not found")
         }
         val updatedProduct = request.toModel(id)
-        return productRepository.save(updatedProduct).toResponse()
+        return productToResponse(productRepository.save(updatedProduct))
     }
 
     fun deleteById(id: Long) {

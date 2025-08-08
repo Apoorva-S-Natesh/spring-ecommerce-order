@@ -1,5 +1,6 @@
 package ecommerce.controller
 
+import ecommerce.dto.member.MemberResponse
 import ecommerce.dto.member.UpdateRequest
 import ecommerce.model.Member
 import ecommerce.service.MemberService
@@ -21,7 +22,9 @@ class MemberController(private val memberService: MemberService) {
     @GetMapping("/{id}")
     fun getMemberById(
         @PathVariable id: Long,
-    ): Member = memberService.getMemberById(id)
+    ): MemberResponse {
+        return memberService.getMemberById(id)
+    }
 
     @GetMapping("")
     fun getAllMembers(

@@ -10,11 +10,9 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
-import org.springframework.transaction.annotation.Transactional
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Transactional
 class CartStatisticsControllerTest() {
     @Autowired
     private lateinit var mockMvc: MockMvc
@@ -25,11 +23,6 @@ class CartStatisticsControllerTest() {
     private fun createAdminToken(): String {
         val adminMember = Member("admin@test.com", "password", "Admin User", Role.ADMIN, null, 1L)
         return tokenService.generateToken(adminMember)
-    }
-
-    private fun createUserToken(): String {
-        val userMember = Member("user@test.com", "password", "Regular User", Role.USER, null, 2L)
-        return tokenService.generateToken(userMember)
     }
 
     @Test

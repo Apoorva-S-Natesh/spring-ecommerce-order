@@ -7,6 +7,7 @@ import ecommerce.model.Member
 import ecommerce.model.Role
 import ecommerce.service.CartItemService
 import ecommerce.service.CartService
+import ecommerce.utils.ResponseMapper
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
@@ -40,11 +41,10 @@ class CartControllerTest {
         val testMember = Member("test@email.com", "password", "Test User", Role.USER, id = userId)
         val testCart = Cart(member = testMember, id = 1L)
 
-        `when`(cartService.getCartByUserId(userId)).thenReturn(testCart.toResponse())
+        `when`(cartService.getCartByUserId(userId)).thenReturn(ResponseMapper.cartToResponse(testCart))
 
         val response = cartController.getCart(userId)
 
-//        assertEquals(testCart, response)
         assertEquals(userId, response.memberId)
         verify(cartService, times(1)).getCartByUserId(userId)
     }

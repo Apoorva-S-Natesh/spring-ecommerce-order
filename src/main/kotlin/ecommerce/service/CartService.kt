@@ -7,6 +7,7 @@ import ecommerce.model.Cart
 import ecommerce.repository.CartRepository
 import ecommerce.repository.MemberRepository
 import ecommerce.repository.ProductOptionRepository
+import ecommerce.utils.ResponseMapper.cartToResponse
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -22,7 +23,7 @@ class CartService(
         val cart =
             cartRepository.findByMemberId(userId)
                 ?: throw NotFoundException("Cart not found for user $userId")
-        return cart.toResponse()
+        return cartToResponse(cart)
     }
 
     @Transactional
@@ -42,7 +43,8 @@ class CartService(
                     newItemAddedAt = LocalDateTime.now(),
                     id = existingCart.id,
                 )
-            cartRepository.save(updatedCart).toResponse()
+            val cart = cartRepository.save(updatedCart)
+            cartToResponse(cart)
         } else {
             val member =
                 memberRepository.findById(userId).getOrNull()
@@ -54,7 +56,7 @@ class CartService(
                     quantity = request.newProductOptionQuantity,
                     newItemAddedAt = LocalDateTime.now(),
                 )
-            cartRepository.save(newCart).toResponse()
+            cartToResponse(cartRepository.save(newCart))
         }
     }
 
@@ -84,6 +86,7 @@ class CartService(
                 newItemAddedAt = LocalDateTime.now(),
                 id = existingCart.id,
             )
-        return cartRepository.save(updatedCart).toResponse()
+        val cart = cartRepository.save(updatedCart)
+        return cartToResponse(cart)
     }
 }

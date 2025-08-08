@@ -1,7 +1,6 @@
 package ecommerce.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import ecommerce.dto.member.MemberResponse
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
@@ -34,14 +33,6 @@ class Member(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
 ) {
-    fun toResponse() =
-        MemberResponse(
-            id = id ?: throw IllegalStateException("Member ID cannot be null"),
-            email = email,
-            name = name,
-            cartId = cart?.id,
-        )
-
     fun assignCart(cart: Cart) {
         if (cart.member != this) throw IllegalArgumentException("Cart must be associated with this member")
         this.cart = cart
