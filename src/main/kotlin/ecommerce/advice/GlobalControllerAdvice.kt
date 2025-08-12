@@ -6,7 +6,10 @@ import ecommerce.exception.DuplicateNameException
 import ecommerce.exception.ErrorResponse
 import ecommerce.exception.InsufficientProductOptionsException
 import ecommerce.exception.NotFoundException
+import ecommerce.exception.OrderProcessingException
 import ecommerce.exception.ProductValidationException
+import ecommerce.exception.StripePaymentException
+import ecommerce.stripe.DeclineCode
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -67,5 +70,59 @@ class GlobalControllerAdvice {
             error = "BAD_REQUEST",
             message = e.message!!,
         )
+    }
+
+    @ExceptionHandler(StripePaymentException::class)
+    fun handleStripePaymentException(e: StripePaymentException): ResponseEntity<ErrorResponse> {
+        val (errorCode, status, message) =
+            when (e.declineCode) {
+                in DeclineCode.entries.map { it.stripeCode } -> {
+                    val decline = DeclineCode.fromStripeCode(e.declineCode)
+                    Triple(decline.stripeCode, HttpStatus.BAD_REQUEST, decline.userMessage)
+                }
+
+                "authentication_required" ->
+                    Triple(
+                        "AUTHENTICATION_REQUIRED",
+                        HttpStatus.UNAUTHORIZED,
+                        "Authentication with the card issuer is required.",
+                    )
+
+                "invalid_request_error" -> Triple(
+                    "INVALID_REQUEST",
+                    HttpStatus.BAD_REQUEST,
+                    e.message ?: "Invalid request parameters."
+                )
+
+                "rate_limit" -> Triple(
+                    "RATE_LIMIT",
+                    HttpStatus.TOO_MANY_REQUESTS,
+                    "Too many requests. Please try again later."
+                )
+
+                "api_connection_error" ->
+                    Triple(
+                        "API_CONNECTION_ERROR",
+                        HttpStatus.SERVICE_UNAVAILABLE,
+                        "Unable to connect to Stripe. Please try again later.",
+                    )
+
+                else -> Triple(
+                    "STRIPE_ERROR",
+                    HttpStatus.BAD_REQUEST,
+                    e.message ?: "An error occurred during payment processing."
+                )
+            }
+        return createErrorResponse(e, errorCode, status)
+    }
+
+    @ExceptionHandler(OrderProcessingException::class)
+    fun handleOrderProcessingException(e: OrderProcessingException): ResponseEntity<ErrorResponse> {
+        val status =
+            when ("BAD_REQUEST") {
+                in DeclineCode.entries.map { it.stripeCode } -> HttpStatus.BAD_REQUEST
+                else -> HttpStatus.BAD_REQUEST
+            }
+        return createErrorResponse(e, "BAD_REQUEST", status)
     }
 }

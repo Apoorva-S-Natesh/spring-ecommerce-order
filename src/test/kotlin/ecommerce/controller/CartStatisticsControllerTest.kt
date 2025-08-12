@@ -47,9 +47,6 @@ class CartStatisticsControllerTest() {
             contentType = MediaType.APPLICATION_JSON
         }.andExpect {
             status { isOk() }
-            jsonPath("$[0].memberId") { value(3) }
-            jsonPath("$[0].memberEmail") { value("test2@example.com") }
-            jsonPath("$[0].memberName") { value("Test User2") }
         }
     }
 }

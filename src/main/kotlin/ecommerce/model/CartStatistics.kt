@@ -3,7 +3,6 @@ package ecommerce.model
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
-import jakarta.persistence.ForeignKey
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
@@ -15,13 +14,8 @@ import java.time.LocalDateTime
 @Entity
 @Table(name = "cart_statistics")
 class CartStatistics(
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(
-        name = "cart_item_id",
-        nullable = false,
-        foreignKey = ForeignKey(foreignKeyDefinition = "FOREIGN KEY (cart_item_id) REFERENCES cart_items(id) ON DELETE CASCADE"),
-    )
-    val cartItem: CartItem,
+    @Column(name = "cart_item_id", nullable = false)
+    val cartItemId: Long,
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cart_id", nullable = false)
     val cart: Cart,
