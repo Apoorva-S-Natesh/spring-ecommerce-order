@@ -1,5 +1,7 @@
 package ecommerce.utils
 
+import ecommerce.dto.OrderItemResponse
+import ecommerce.dto.OrderResponse
 import ecommerce.dto.ProductOptionResponse
 import ecommerce.dto.ProductResponse
 import ecommerce.dto.cart.CartResponse
@@ -8,6 +10,7 @@ import ecommerce.dto.member.MemberResponse
 import ecommerce.model.Cart
 import ecommerce.model.CartItem
 import ecommerce.model.Member
+import ecommerce.model.Order
 import ecommerce.model.Product
 import ecommerce.model.ProductOption
 
@@ -44,5 +47,21 @@ object ResponseMapper {
             productOption.id,
             productOption.name,
             productOption.product.id,
+        )
+
+    fun orderToResponse(order: Order) =
+        OrderResponse(
+            id = order.id,
+            orderDate = order.orderDate,
+            status = order.payment?.status,
+            amount = order.payment?.amount,
+            orderItems =
+                order.orderItems.map { item ->
+                    OrderItemResponse(
+                        item.quantity,
+                        item.price,
+                        item.productOption.id!!,
+                    )
+                },
         )
 }
