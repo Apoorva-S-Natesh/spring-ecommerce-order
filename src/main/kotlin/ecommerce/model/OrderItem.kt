@@ -20,7 +20,7 @@ class OrderItem(
     val productOption: ProductOption,
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long? = null
+    var id: Long? = null,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

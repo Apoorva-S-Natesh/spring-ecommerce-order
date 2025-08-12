@@ -18,4 +18,9 @@ interface CartItemRepository : JpaRepository<CartItem, Long> {
 
     @Modifying
     fun deleteByCartId(cartId: Long)
+
+    fun findByCartIdAndProductOptionId(
+        cartId: Long,
+        productOptionId: Long,
+    ): CartItem?
 }

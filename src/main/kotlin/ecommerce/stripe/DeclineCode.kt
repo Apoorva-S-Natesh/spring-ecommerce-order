@@ -1,4 +1,4 @@
 package ecommerce.stripe
 
-class StripeProperties {
+enum class DeclineCode {
 }
