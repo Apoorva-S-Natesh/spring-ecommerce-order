@@ -7,6 +7,7 @@ import ecommerce.model.Role
 import ecommerce.service.TokenService
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.HandlerInterceptor
 
@@ -17,21 +18,30 @@ class AuthInterceptor(private val tokenService: TokenService) : HandlerIntercept
         response: HttpServletResponse,
         handler: Any,
     ): Boolean {
+        logger.debug("Processing request: ${request.requestURI}, Authorization: ${request.getHeader(AUTH_HEADER)}")
         val token =
-            extractToken(request)
-                ?: throw AuthenticationException("Missing or invalid Authorization header")
+            extractToken(request) ?: run {
+                logger.warn("Missing or invalid Authorization header")
+                throw AuthenticationException("Missing or invalid Authorization header")
+            }
 
         val claims =
-            tokenService.validateToken(token)
-                ?: throw AuthenticationException("Invalid or expired token")
+            tokenService.validateToken(token) ?: run {
+                logger.warn("Invalid or expired token: $token")
+                throw AuthenticationException("Invalid or expired token")
+            }
 
         val userId =
-            extractUserId(claims)
-                ?: throw AuthenticationException("Invalid token payload")
+            extractUserId(claims) ?: run {
+                logger.warn("Invalid token payload: missing userId")
+                throw AuthenticationException("Invalid token payload")
+            }
 
+        logger.debug("Authenticated userId: $userId")
         storeAuthenticatedUser(request, claims, userId)
 
         if (requiresAdminAccess(request) && !hasAdminRole(claims)) {
+            logger.warn("Admin access required for ${request.requestURI}")
             throw AuthorizationException("Admin access required")
         }
 
@@ -81,5 +91,6 @@ class AuthInterceptor(private val tokenService: TokenService) : HandlerIntercept
         private const val BEARER_PREFIX = "Bearer "
         private const val ADMIN_PATH = "/admin"
         private const val ADMIN_PATH_PREFIX = "/api/admin/"
+        private val logger = LoggerFactory.getLogger(AuthInterceptor::class.java)
     }
 }

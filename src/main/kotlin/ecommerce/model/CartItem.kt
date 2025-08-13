@@ -9,24 +9,27 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
+import jakarta.persistence.UniqueConstraint
 import java.time.LocalDateTime
 import java.util.Objects
 
 @Entity
-@Table(name = "cart_items")
+@Table(
+    name = "cart_items",
+    uniqueConstraints = [UniqueConstraint(columnNames = ["cart_id", "product_option_id"])],
+)
 class CartItem(
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cart_id", nullable = true)
+    @JoinColumn(name = "cart_id", nullable = false)
     var cart: Cart,
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "product_option_id", nullable = true)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_option_id", nullable = false)
     var productOption: ProductOption,
-    @Column(name = "quantity", nullable = true)
+    @Column(name = "quantity", nullable = false)
     var quantity: Int,
     @Column(name = "updatedAt", nullable = false)
-    var itemAddedAt: LocalDateTime? = null,
+    var itemAddedAt: LocalDateTime? = LocalDateTime.now(),
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,

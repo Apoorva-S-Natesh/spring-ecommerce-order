@@ -1,9 +1,11 @@
 package ecommerce.service
 
+import ecommerce.interceptor.AuthInterceptor
 import ecommerce.model.Member
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.util.Date
@@ -15,6 +17,7 @@ class TokenService(
     @Value("\${jwt.expiration}") private val expiration: Long,
 ) {
     private val key: SecretKey = Keys.hmacShaKeyFor(secretKey.toByteArray())
+    private val logger = LoggerFactory.getLogger(AuthInterceptor::class.java)
 
     fun generateToken(member: Member): String {
         val now = Date()
@@ -39,6 +42,7 @@ class TokenService(
                 .parseSignedClaims(token)
                 .payload
         } catch (e: Exception) {
+            logger.error("Token validation failed: ${e.message}")
             null
         }
     }
