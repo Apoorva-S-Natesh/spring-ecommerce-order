@@ -54,7 +54,6 @@ class CartItem(
     ) {
         validateQuantity(request, productOption)
         if (isDirectUpdate) {
-//            productOption.updateQuantity(request.newProductOptionQuantity)
             cart.updateQuantity(request.newProductOptionQuantity)
         } else {
             cart.updateQuantity(request.newProductOptionQuantity)

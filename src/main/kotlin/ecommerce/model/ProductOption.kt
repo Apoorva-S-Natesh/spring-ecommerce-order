@@ -37,10 +37,6 @@ class ProductOption(
         this.quantity -= quantity
     }
 
-//    fun updateQuantity(newQuantity: Int) {
-//        quantity = newQuantity
-//    }
-
     fun validateQuantity(requestedQuantity: Int) {
         if (requestedQuantity > quantity) {
             throw IllegalArgumentException(
