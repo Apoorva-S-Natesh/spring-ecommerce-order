@@ -7,6 +7,7 @@ import ecommerce.exception.AuthenticationException
 import ecommerce.exception.NotFoundException
 import ecommerce.model.Cart
 import ecommerce.model.Member
+import ecommerce.repository.CartRepository
 import ecommerce.repository.MemberRepository
 import ecommerce.utils.ResponseMapper.memberToResponse
 import jakarta.transaction.Transactional
@@ -21,6 +22,7 @@ class MemberService(
     private val memberRepository: MemberRepository,
     private val passwordService: PasswordService,
     private val tokenService: TokenService,
+    private val cartRepository: CartRepository,
 ) {
     @Transactional
     fun register(request: RegisterRequest): String {
@@ -30,9 +32,11 @@ class MemberService(
         val hashedPassword = passwordService.hashPassword(request.password)
         val member = request.toModel(hashedPassword)
 
-        val savedCart = Cart(member = member)
-        member.assignCart(savedCart)
         val savedMember = memberRepository.save(member)
+        val savedCart = cartRepository.save(Cart(member = savedMember))
+        savedMember.assignCart(savedCart)
+        memberRepository.save(savedMember)
+
         return tokenService.generateToken(savedMember)
     }
 
