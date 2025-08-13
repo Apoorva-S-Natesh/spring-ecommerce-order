@@ -88,17 +88,19 @@ class GlobalControllerAdvice {
                         "Authentication with the card issuer is required.",
                     )
 
-                "invalid_request_error" -> Triple(
-                    "INVALID_REQUEST",
-                    HttpStatus.BAD_REQUEST,
-                    e.message ?: "Invalid request parameters."
-                )
+                "invalid_request_error" ->
+                    Triple(
+                        "INVALID_REQUEST",
+                        HttpStatus.BAD_REQUEST,
+                        e.message ?: "Invalid request parameters.",
+                    )
 
-                "rate_limit" -> Triple(
-                    "RATE_LIMIT",
-                    HttpStatus.TOO_MANY_REQUESTS,
-                    "Too many requests. Please try again later."
-                )
+                "rate_limit" ->
+                    Triple(
+                        "RATE_LIMIT",
+                        HttpStatus.TOO_MANY_REQUESTS,
+                        "Too many requests. Please try again later.",
+                    )
 
                 "api_connection_error" ->
                     Triple(
@@ -107,13 +109,14 @@ class GlobalControllerAdvice {
                         "Unable to connect to Stripe. Please try again later.",
                     )
 
-                else -> Triple(
-                    "STRIPE_ERROR",
-                    HttpStatus.BAD_REQUEST,
-                    e.message ?: "An error occurred during payment processing."
-                )
+                else ->
+                    Triple(
+                        "STRIPE_ERROR",
+                        HttpStatus.BAD_REQUEST,
+                        e.message ?: "An error occurred during payment processing.",
+                    )
             }
-        return createErrorResponse(e, errorCode, status)
+        return createErrorResponse(e, errorCode, status, listOf(message))
     }
 
     @ExceptionHandler(OrderProcessingException::class)
