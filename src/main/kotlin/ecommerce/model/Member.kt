@@ -1,6 +1,7 @@
 package ecommerce.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
@@ -25,7 +26,7 @@ class Member(
     @Column(name = "role", nullable = false)
     @Enumerated(EnumType.STRING)
     val role: Role = Role.USER,
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
     @JoinColumn(name = "cart_id", nullable = true)
     @JsonIgnore
     var cart: Cart? = null,
