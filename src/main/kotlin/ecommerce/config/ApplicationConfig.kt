@@ -1,4 +1,6 @@
 package ecommerce.config
 
-class ApplicationConfig {
-}
+import org.springframework.context.annotation.Configuration
+
+@Configuration
+class ApplicationConfig
