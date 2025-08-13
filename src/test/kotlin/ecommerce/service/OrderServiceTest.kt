@@ -6,17 +6,13 @@ import ecommerce.model.Member
 import ecommerce.model.ProductOption
 import ecommerce.repository.CartItemRepository
 import ecommerce.repository.MemberRepository
-import ecommerce.repository.OrderRepository
 import ecommerce.repository.ProductOptionRepository
-import ecommerce.repository.ProductRepository
-import ecommerce.stripe.StripeClient
 import jakarta.persistence.EntityNotFoundException
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertNotNull
 import org.junit.jupiter.api.assertThrows
-import org.mockito.Mock
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.transaction.annotation.Transactional
@@ -29,7 +25,6 @@ class OrderServiceTest {
 
     @Autowired
     lateinit var productOptionRepository: ProductOptionRepository
-
 
     @Autowired
     lateinit var memberRepository: MemberRepository
