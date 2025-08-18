@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import ecommerce.dto.ProductOptionRequest
 import ecommerce.dto.ProductRequest
 import ecommerce.model.Member
-import ecommerce.model.Product
 import ecommerce.model.Role
 import ecommerce.service.TokenService
 import org.junit.jupiter.api.Test
@@ -64,9 +63,7 @@ class AdminControllerTest {
                 status { isCreated() }
             }.andReturn()
 
-        val productId =
-            objectMapper.readTree(createdProductResponse.response.contentAsString)
-                .get("id").asLong()
+        val productId = objectMapper.readTree(createdProductResponse.response.contentAsString).get("id").asLong()
 
         mockMvc.get("/api/admin/products/$productId") {
             header("Authorization", "Bearer $adminToken")
@@ -178,9 +175,7 @@ class AdminControllerTest {
                 status { isCreated() }
             }.andReturn()
 
-        val productId =
-            objectMapper.readTree(createdProductResponse.response.contentAsString)
-                .get("id").asLong()
+        val productId = objectMapper.readTree(createdProductResponse.response.contentAsString).get("id").asLong()
 
         val updatedProduct =
             ProductRequest(
@@ -225,9 +220,7 @@ class AdminControllerTest {
                 status { isCreated() }
             }.andReturn()
 
-        val productId =
-            objectMapper.readTree(createdProductResponse.response.contentAsString)
-                .get("id").asLong()
+        val productId = objectMapper.readTree(createdProductResponse.response.contentAsString).get("id").asLong()
 
         mockMvc.delete("/api/admin/products/$productId") {
             header("Authorization", "Bearer $adminToken")
@@ -264,15 +257,13 @@ class AdminControllerTest {
                 status { isCreated() }
             }.andReturn()
 
-        val productId =
-            objectMapper.readTree(createdProductResponse.response.contentAsString)
-                .get("id").asLong()
+        val productId = objectMapper.readTree(createdProductResponse.response.contentAsString).get("id").asLong()
 
-        val product =
-            objectMapper.readValue(
-                createdProductResponse.response.contentAsString,
-                Product::class.java,
-            )
+//        val product =
+//            objectMapper.readValue(
+//                createdProductResponse.response.contentAsString,
+//                Product::class.java,
+//            )
 
         val productOptionRequest =
             ProductOptionRequest(
@@ -315,15 +306,13 @@ class AdminControllerTest {
                 status { isCreated() }
             }.andReturn()
 
-        val productId =
-            objectMapper.readTree(createdProductResponse.response.contentAsString)
-                .get("id").asLong()
+        val productId = objectMapper.readTree(createdProductResponse.response.contentAsString).get("id").asLong()
 
-        val product =
-            objectMapper.readValue(
-                createdProductResponse.response.contentAsString,
-                Product::class.java,
-            )
+//        val product =
+//            objectMapper.readValue(
+//                createdProductResponse.response.contentAsString,
+//                Product::class.java,
+//            )
 
         val invalidOptionRequest =
             ProductOptionRequest(
@@ -425,9 +414,7 @@ class AdminControllerTest {
                 status { isCreated() }
             }.andReturn()
 
-        val productId =
-            objectMapper.readTree(createdProductResponse.response.contentAsString)
-                .get("id").asLong()
+        val productId = objectMapper.readTree(createdProductResponse.response.contentAsString).get("id").asLong()
 
         val productOptionRequest =
             ProductOptionRequest(
@@ -445,9 +432,7 @@ class AdminControllerTest {
                 status { isCreated() }
             }.andReturn()
 
-        val optionId =
-            objectMapper.readTree(createdOptionResponse.response.contentAsString)
-                .get("id").asLong()
+        val optionId = objectMapper.readTree(createdOptionResponse.response.contentAsString).get("id").asLong()
 
         val updatedOptionRequest =
             ProductOptionRequest(
@@ -489,9 +474,7 @@ class AdminControllerTest {
                 status { isCreated() }
             }.andReturn()
 
-        val productId =
-            objectMapper.readTree(createdProductResponse.response.contentAsString)
-                .get("id").asLong()
+        val productId = objectMapper.readTree(createdProductResponse.response.contentAsString).get("id").asLong()
 
         val firstOptionRequest =
             ProductOptionRequest(
