@@ -2,6 +2,7 @@ package ecommerce.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpHeaders
 import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
@@ -15,7 +16,7 @@ class CorsConfig {
                     .allowedOrigins("*")
                     .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
                     .allowedHeaders("*")
-                    .exposedHeaders("Location")
+                    .exposedHeaders(HttpHeaders.LOCATION)
                     .maxAge(3600)
             }
         }
