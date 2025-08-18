@@ -110,13 +110,13 @@
  - [x] **Tests** - Integration tests (no orders, invalid user, failed payment)
 
 ## Deployment
-- [] Deployment Script (shell script) - automate deployment
-  - [] steps to copy the build, start application with nohup
-- [] Configure environment variable - secure stripe API key
-- [] Configure CORS to allow client requests(CorsConfiguration)
-- [] Set allowedOrigins to * allow methods (GET, POST, etc.), set maxAge to 1800 seconds.
-- [] Test CORS with AcceptanceTest to verify headers
-- [] Deploy to AWS EC2
+- [x] Deployment Script (shell script) - automate deployment
+  - [X] steps to copy the build, start application with nohup
+- [X] Configure environment variable - secure stripe API key
+- [X] Configure CORS to allow client requests(CorsConfiguration)
+- [X] Set allowedOrigins to * allow methods (GET, POST, etc.), set maxAge to 1800 seconds.
+- [X] Test CORS with AcceptanceTest to verify headers
+- [X] Deploy to AWS EC2
 
 ## Next Steps - Webhook
 - [] setup Webhook endpoint - handle asynchronous payment flows (WebHook controller POST /api/webhooks/stripe)
