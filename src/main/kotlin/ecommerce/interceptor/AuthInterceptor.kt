@@ -18,30 +18,12 @@ class AuthInterceptor(private val tokenService: TokenService) : HandlerIntercept
         response: HttpServletResponse,
         handler: Any,
     ): Boolean {
-        logger.debug("Processing request: ${request.requestURI}, Authorization: ${request.getHeader(AUTH_HEADER)}")
-        val token =
-            extractToken(request) ?: run {
-                logger.warn("Missing or invalid Authorization header")
-                throw AuthenticationException("Missing or invalid Authorization header")
-            }
+        val token = extractToken(request) ?: throw AuthenticationException("Missing or invalid Authorization header")
+        val claims = tokenService.validateToken(token) ?: throw AuthenticationException("Invalid or expired token")
+        val userId = extractUserId(claims) ?: throw AuthenticationException("Invalid token payload")
 
-        val claims =
-            tokenService.validateToken(token) ?: run {
-                logger.warn("Invalid or expired token: $token")
-                throw AuthenticationException("Invalid or expired token")
-            }
-
-        val userId =
-            extractUserId(claims) ?: run {
-                logger.warn("Invalid token payload: missing userId")
-                throw AuthenticationException("Invalid token payload")
-            }
-
-        logger.debug("Authenticated userId: $userId")
         storeAuthenticatedUser(request, claims, userId)
-
         if (requiresAdminAccess(request) && !hasAdminRole(claims)) {
-            logger.warn("Admin access required for ${request.requestURI}")
             throw AuthorizationException("Admin access required")
         }
 

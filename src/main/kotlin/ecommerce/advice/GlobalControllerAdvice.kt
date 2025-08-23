@@ -11,6 +11,7 @@ import ecommerce.exception.ProductValidationException
 import ecommerce.exception.StripePaymentException
 import ecommerce.stripe.DeclineCode
 import ecommerce.stripe.StripeApiError
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 
 @RestControllerAdvice
 class GlobalControllerAdvice {
+    private val log = LoggerFactory.getLogger(javaClass)
+
     private fun createErrorResponse(
         exception: Exception,
         errorCode: String,
@@ -46,11 +49,13 @@ class GlobalControllerAdvice {
 
     @ExceptionHandler(AuthenticationException::class)
     fun handleAuthenticationException(e: AuthenticationException): ResponseEntity<ErrorResponse> {
+        log.error("Authentication failed: {}", e.message)
         return createErrorResponse(e, e.errorCode, HttpStatus.UNAUTHORIZED)
     }
 
     @ExceptionHandler(AuthorizationException::class)
     fun handleAuthorizationException(e: AuthorizationException): ResponseEntity<ErrorResponse> {
+        log.error("Authorization failed: {}", e.message)
         return createErrorResponse(e, e.errorCode, HttpStatus.FORBIDDEN)
     }
 
