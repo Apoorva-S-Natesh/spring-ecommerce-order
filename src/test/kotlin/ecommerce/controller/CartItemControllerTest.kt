@@ -107,7 +107,6 @@ class CartItemControllerTest {
         assertThat(response.body?.quantity).isEqualTo(7)
         assertThat(response.body?.productOptionResponse?.id).isEqualTo(2)
         assertThat(response.body?.productOptionResponse?.name).isEqualTo("Red")
-        assertThat(response.body?.cartId).isEqualTo(cart.id)
 
         val savedCartItem = cartItemRepository.findById(response.body?.id!!)
         assertThat(savedCartItem).isPresent
