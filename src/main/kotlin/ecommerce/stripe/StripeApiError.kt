@@ -23,7 +23,7 @@ enum class StripeApiError(val stripeCode: String, val userMessage: String, val h
         "Unable to connect to Stripe. Please try again later.",
         HttpStatus.SERVICE_UNAVAILABLE,
     ),
-    UNKNOWN("unknown", "An unexpected error occurred during payment processing.", HttpStatus.BAD_REQUEST)
+    UNKNOWN("unknown", "An unexpected error occurred during payment processing.", HttpStatus.BAD_REQUEST),
     ;
 
     companion object {

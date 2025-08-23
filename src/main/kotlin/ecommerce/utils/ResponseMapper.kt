@@ -11,6 +11,7 @@ import ecommerce.model.Cart
 import ecommerce.model.CartItem
 import ecommerce.model.Member
 import ecommerce.model.Order
+import ecommerce.model.PaymentStatus
 import ecommerce.model.Product
 import ecommerce.model.ProductOption
 
@@ -53,7 +54,7 @@ object ResponseMapper {
         OrderResponse(
             id = order.id,
             orderDate = order.orderDate,
-            status = order.payment?.status,
+            status = order.payment?.status ?: PaymentStatus.UNKNOWN,
             amount = order.payment?.amount,
             orderItems =
                 order.orderItems.map { item ->

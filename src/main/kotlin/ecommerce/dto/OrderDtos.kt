@@ -1,5 +1,6 @@
 package ecommerce.dto
 
+import ecommerce.model.PaymentStatus
 import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
@@ -64,7 +65,7 @@ class OrderItemResponse(
 class OrderResponse(
     val id: Long?,
     val orderDate: LocalDateTime?,
-    val status: String?,
+    val status: PaymentStatus,
     val amount: Long?,
     val orderItems: List<OrderItemResponse>,
 )

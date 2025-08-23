@@ -2,6 +2,8 @@ package ecommerce.model
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
@@ -16,7 +18,8 @@ class Payment(
     @Column
     var currency: String? = "USD",
     @Column
-    var status: String? = "PENDING",
+    @Enumerated(EnumType.STRING)
+    var status: PaymentStatus = PaymentStatus.UNKNOWN,
     @Column
     var paymentMethod: String? = null,
     @Column

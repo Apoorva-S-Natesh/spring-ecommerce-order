@@ -3,8 +3,6 @@ package ecommerce.controller
 import ecommerce.dto.OrderResponse
 import ecommerce.dto.PlaceOrderRequest
 import ecommerce.dto.auth.AuthenticatedUser
-import ecommerce.exception.ErrorResponse
-import ecommerce.exception.OrderProcessingException
 import ecommerce.service.OrderService
 import jakarta.validation.Valid
 import org.springframework.data.domain.Page
@@ -25,8 +23,8 @@ class OrderController(private val orderService: OrderService) {
         @Valid @RequestBody placeOrderRequest: PlaceOrderRequest,
         user: AuthenticatedUser,
     ): ResponseEntity<Any> {
-            val order = orderService.placeOrder(placeOrderRequest, user.userId)
-            return ResponseEntity.ok(order)
+        val order = orderService.placeOrder(placeOrderRequest, user.userId)
+        return ResponseEntity.ok(order)
     }
 
     @GetMapping("")

@@ -10,6 +10,7 @@ import ecommerce.model.Member
 import ecommerce.model.Order
 import ecommerce.model.OrderItem
 import ecommerce.model.Payment
+import ecommerce.model.PaymentStatus
 import ecommerce.model.ProductOption
 import ecommerce.repository.CartItemRepository
 import ecommerce.repository.MemberRepository
@@ -141,7 +142,7 @@ class OrderService(
                 checkoutSessionId = paymentResponse.id,
                 amount = paymentResponse.amount,
                 currency = paymentResponse.currency,
-                status = paymentResponse.status,
+                status = PaymentStatus.fromStripeStatus(paymentResponse.status),
                 paymentMethod = paymentResponse.paymentMethod,
             )
         order.payment = payment
