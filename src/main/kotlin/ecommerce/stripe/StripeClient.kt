@@ -54,13 +54,6 @@ class StripeClient(
         return executeStripeRequest(url = "https://api.stripe.com/v1/payment_intents", body = body)
     }
 
-    fun confirmPayment(intentId: String): PaymentResponse {
-        return executeStripeRequest(
-            url = "https://api.stripe.com/v1/payment_intents/$intentId/confirm",
-            body = "",
-        )
-    }
-
     private fun executeStripeRequest(
         url: String,
         body: String,

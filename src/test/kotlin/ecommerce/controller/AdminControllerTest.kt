@@ -259,12 +259,6 @@ class AdminControllerTest {
 
         val productId = objectMapper.readTree(createdProductResponse.response.contentAsString).get("id").asLong()
 
-//        val product =
-//            objectMapper.readValue(
-//                createdProductResponse.response.contentAsString,
-//                Product::class.java,
-//            )
-
         val productOptionRequest =
             ProductOptionRequest(
                 name = "Red Color",
@@ -307,12 +301,6 @@ class AdminControllerTest {
             }.andReturn()
 
         val productId = objectMapper.readTree(createdProductResponse.response.contentAsString).get("id").asLong()
-
-//        val product =
-//            objectMapper.readValue(
-//                createdProductResponse.response.contentAsString,
-//                Product::class.java,
-//            )
 
         val invalidOptionRequest =
             ProductOptionRequest(

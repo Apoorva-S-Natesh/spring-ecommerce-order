@@ -21,12 +21,4 @@ class OrderItem(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
-) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is OrderItem) return false
-        return id != null && other.id == id
-    }
-
-    override fun hashCode(): Int = id?.hashCode() ?: 0
-}
+)

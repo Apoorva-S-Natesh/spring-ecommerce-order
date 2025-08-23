@@ -26,7 +26,6 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-import org.springframework.web.client.RestClient
 import java.time.LocalDateTime
 
 @Service
@@ -37,8 +36,6 @@ class OrderService(
     private val memberRepository: MemberRepository,
     private val stripeClient: StripeClient,
 ) {
-    private val restClient = RestClient.create()
-
     fun getMemberOrders(
         memberId: Long,
         page: Int,
