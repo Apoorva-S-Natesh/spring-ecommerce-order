@@ -45,6 +45,10 @@ class ProductOption(
         }
     }
 
+    fun calculateAmount(quantity: Int): Long {
+        return (product.price * quantity * 100).toLong()
+    }
+
     companion object {
         private const val MIN_QUANTITY = 1
         private const val MAX_QUANTITY = 99999999

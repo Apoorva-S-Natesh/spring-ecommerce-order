@@ -13,8 +13,11 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertNotNull
 import org.junit.jupiter.api.assertThrows
+import org.mockito.Mockito.`when`
+import org.mockito.kotlin.any
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.transaction.annotation.Transactional
 
 @SpringBootTest
@@ -22,6 +25,9 @@ import org.springframework.transaction.annotation.Transactional
 class OrderServiceTest {
     @Autowired
     lateinit var orderService: OrderService
+
+    @MockitoBean
+    lateinit var paymentService: PaymentService
 
     @Autowired
     lateinit var productOptionRepository: ProductOptionRepository
@@ -45,7 +51,7 @@ class OrderServiceTest {
 
     @Test
     fun `createOrder should place order successfully with valid request`() {
-        val paymentResponse =
+        val mockPaymentResponse =
             PaymentResponse(
                 id = "pi_123",
                 amount = 1000L,
@@ -54,7 +60,8 @@ class OrderServiceTest {
                 currency = "USD",
                 declineCode = null,
             )
-        val orderResponse = orderService.createOrder(member.id!!, paymentResponse, option, 1)
+        `when`(paymentService.processPayment(any())).thenReturn(mockPaymentResponse)
+        val orderResponse = orderService.createOrder(member.id!!, mockPaymentResponse, option, 1)
         assertNotNull(orderResponse.id)
         assertThat(orderResponse.amount).isEqualTo(1000)
     }

@@ -12,22 +12,22 @@ import java.time.LocalDateTime
 @Entity
 class Payment(
     @Column
-    var checkoutSessionId: String? = null,
+    val checkoutSessionId: String? = null,
     @Column
-    var amount: Long? = null,
+    val amount: Long? = null,
     @Column
     @Enumerated(EnumType.STRING)
-    var currency: Currency = Currency.UNKNOWN,
+    val currency: Currency = Currency.UNKNOWN,
     @Column
     @Enumerated(EnumType.STRING)
     var status: PaymentStatus = PaymentStatus.UNKNOWN,
     @Column
-    var paymentMethod: String? = null,
+    val paymentMethod: String? = null,
     @Column
-    var createdAt: LocalDateTime? = LocalDateTime.now(),
+    val createdAt: LocalDateTime? = LocalDateTime.now(),
     @Column
-    var lastPaymentError: String? = null,
+    val lastPaymentError: String? = null,
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long? = null,
+    val id: Long? = null,
 )

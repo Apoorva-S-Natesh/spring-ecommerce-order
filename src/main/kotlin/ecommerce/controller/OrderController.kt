@@ -3,6 +3,7 @@ package ecommerce.controller
 import ecommerce.dto.OrderResponse
 import ecommerce.dto.PlaceOrderRequest
 import ecommerce.dto.auth.AuthenticatedUser
+import ecommerce.model.OrderSortOption
 import ecommerce.service.OrderService
 import jakarta.validation.Valid
 import org.springframework.data.domain.Page
@@ -34,7 +35,7 @@ class OrderController(private val orderService: OrderService) {
         @RequestParam(defaultValue = "id") sortBy: String,
         user: AuthenticatedUser,
     ): ResponseEntity<Page<OrderResponse>> {
-        val orders = orderService.getMemberOrders(user.userId, page, size, sortBy)
+        val orders = orderService.getMemberOrders(user.userId, page, size, OrderSortOption.fromString(sortBy))
         return ResponseEntity.ok(orders)
     }
 
@@ -45,7 +46,7 @@ class OrderController(private val orderService: OrderService) {
         @RequestParam(defaultValue = "id") sortBy: String,
         user: AuthenticatedUser,
     ): ResponseEntity<Page<OrderResponse>> {
-        val orders = orderService.getAllOrders(page, size, sortBy)
+        val orders = orderService.getAllOrders(page, size, OrderSortOption.fromString(sortBy))
         return ResponseEntity.ok(orders)
     }
 

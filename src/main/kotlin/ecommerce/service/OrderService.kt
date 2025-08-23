@@ -4,12 +4,11 @@ import ecommerce.dto.OrderResponse
 import ecommerce.dto.PaymentRequest
 import ecommerce.dto.PaymentResponse
 import ecommerce.dto.PlaceOrderRequest
-import ecommerce.exception.OrderProcessingException
-import ecommerce.exception.StripePaymentException
 import ecommerce.model.Currency
 import ecommerce.model.Member
 import ecommerce.model.Order
 import ecommerce.model.OrderItem
+import ecommerce.model.OrderSortOption
 import ecommerce.model.Payment
 import ecommerce.model.PaymentStatus
 import ecommerce.model.ProductOption
@@ -17,8 +16,6 @@ import ecommerce.repository.CartItemRepository
 import ecommerce.repository.MemberRepository
 import ecommerce.repository.OrderRepository
 import ecommerce.repository.ProductOptionRepository
-import ecommerce.stripe.DeclineCode
-import ecommerce.stripe.StripeClient
 import ecommerce.utils.ResponseMapper.orderToResponse
 import jakarta.persistence.EntityNotFoundException
 import jakarta.transaction.Transactional
@@ -35,25 +32,25 @@ class OrderService(
     private val productOptionRepository: ProductOptionRepository,
     private val cartItemRepository: CartItemRepository,
     private val memberRepository: MemberRepository,
-    private val stripeClient: StripeClient,
+    private val paymentService: PaymentService,
 ) {
     fun getMemberOrders(
         memberId: Long,
         page: Int,
         size: Int,
-        sortBy: String,
+        sortBy: OrderSortOption,
     ): Page<OrderResponse> {
         validateMember(memberId)
-        val pageable = PageRequest.of(page, size, Sort.by(sortBy))
+        val pageable = PageRequest.of(page, size, Sort.by(sortBy.fieldName))
         return orderRepository.findByMemberId(memberId, pageable).map { orderToResponse(it) }
     }
 
     fun getAllOrders(
         page: Int,
         size: Int,
-        sortBy: String,
+        sortBy: OrderSortOption,
     ): Page<OrderResponse> {
-        val pageable = PageRequest.of(page, size, Sort.by(sortBy))
+        val pageable = PageRequest.of(page, size, Sort.by(sortBy.fieldName))
         return orderRepository.findAll(pageable).map { orderToResponse(it) }
     }
 
@@ -69,9 +66,9 @@ class OrderService(
         memberId: Long,
     ): OrderResponse {
         val productOption = validateProductOption(req.productOptionId)
-        val amount = calculateAmount(productOption, req.quantity)
+        val amount = productOption.calculateAmount(req.quantity)
         val paymentRequest = buildPaymentRequest(req, amount)
-        val paymentResponse = processPayment(paymentRequest)
+        val paymentResponse = paymentService.processPayment(paymentRequest)
         productOption.subtract(req.quantity)
         val orderResponse = createOrder(memberId, paymentResponse, productOption, req.quantity)
         removeCartItem(memberId, productOption.id!!)
@@ -88,13 +85,6 @@ class OrderService(
             ?: throw EntityNotFoundException("Product Option not found")
     }
 
-    private fun calculateAmount(
-        productOption: ProductOption,
-        quantity: Int,
-    ): Long {
-        return (productOption.product.price * quantity * 100).toLong()
-    }
-
     private fun buildPaymentRequest(
         request: PlaceOrderRequest,
         amount: Long,
@@ -106,15 +96,6 @@ class OrderService(
         )
     }
 
-    private fun processPayment(paymentRequest: PaymentRequest): PaymentResponse {
-        try {
-            return stripeClient.createCheckoutSession(paymentRequest)
-        } catch (e: StripePaymentException) {
-            val decline = DeclineCode.fromStripeCode(e.declineCode)
-            throw OrderProcessingException(decline.stripeCode, decline.userMessage, e)
-        }
-    }
-
     fun createOrder(
         memberId: Long,
         paymentResponse: PaymentResponse,
@@ -122,19 +103,12 @@ class OrderService(
         quantity: Int,
     ): OrderResponse {
         validateMember(memberId)
-        val order =
-            Order(
-                memberId = memberId,
-                orderDate = LocalDateTime.now(),
-                orderItems = mutableListOf(),
-            )
         val orderItem =
             OrderItem(
                 quantity = quantity,
                 price = productOption.product.price,
                 productOption = productOption,
             )
-        order.orderItems.add(orderItem)
         val payment =
             Payment(
                 checkoutSessionId = paymentResponse.id,
@@ -143,7 +117,13 @@ class OrderService(
                 status = PaymentStatus.fromStripeStatus(paymentResponse.status),
                 paymentMethod = paymentResponse.paymentMethod,
             )
-        order.payment = payment
+        val order =
+            Order(
+                memberId = memberId,
+                orderDate = LocalDateTime.now(),
+                orderItems = mutableListOf(),
+                payment = payment,
+            )
         return orderToResponse(orderRepository.save(order))
     }
 

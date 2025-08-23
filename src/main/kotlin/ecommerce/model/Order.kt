@@ -18,15 +18,15 @@ import java.time.LocalDateTime
 class Order(
     @OneToMany(cascade = [CascadeType.ALL], fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "member_orders_id", nullable = false)
-    var orderItems: MutableList<OrderItem> = mutableListOf(),
+    val orderItems: MutableList<OrderItem> = mutableListOf(),
     @Column(name = "member_id", nullable = false)
     val memberId: Long,
     @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
     @JoinColumn(name = "payment_id", nullable = true)
-    var payment: Payment? = null,
+    val payment: Payment? = null,
     @Column(name = "order_date", nullable = false)
-    var orderDate: LocalDateTime = LocalDateTime.now(),
+    val orderDate: LocalDateTime = LocalDateTime.now(),
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long? = null,
+    val id: Long? = null,
 )
