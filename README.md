@@ -66,7 +66,7 @@
 ## Place Order and Payment
 - [x] **Setup Stripe** - add secret-key to application-properties or application.yml(External API)
   - [x] key hidden from gitHub codeBase (environment variable management in springBoot)
-  - [] check key is correctly loaded with StripeProperties (@ConfigurationProperties)
+  - [x] check key is correctly loaded with StripeProperties (@ConfigurationProperties)
   - [x] @EnableConfigurationProperties(StripeProperties::class) on class Application
 - [x] **Entity** - OrderItem (id, quantity, price, ProductOption @ManyToOne - one directional)
 - [x] **DTO** - PlaceOrderRequest(productOptionId, quantity,paymentDetails)
@@ -81,7 +81,7 @@
   - [x] payment successful -> Decrease ProductOption quantity by ordered quantity 
   - [x] payment successful -> Remove CartItem from member's cart (CartItemService.deleteCartItemById)
   - [x] payment successful -> Update Cart Quantity (CartItem removed)
-  - [] Set timeouts for Stripe API calls using RestClient to avoid holding database connections during slow responses.
+  - [x] Set timeouts for Stripe API calls using RestClient to avoid holding database connections during slow responses.
   - [x] Handle transaction propagation (REQUIRED for main transaction)
 - [x] **Controller** - placeOrder endpoints(POST /api/orders/  @RequestBody placeOrderRequest) 
   - verify endpoint requires authentication
