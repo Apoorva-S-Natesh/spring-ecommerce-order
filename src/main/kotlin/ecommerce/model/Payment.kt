@@ -16,7 +16,8 @@ class Payment(
     @Column
     var amount: Long? = null,
     @Column
-    var currency: String? = "USD",
+    @Enumerated(EnumType.STRING)
+    var currency: Currency = Currency.UNKNOWN,
     @Column
     @Enumerated(EnumType.STRING)
     var status: PaymentStatus = PaymentStatus.UNKNOWN,

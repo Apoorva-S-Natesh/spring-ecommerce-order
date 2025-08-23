@@ -6,6 +6,7 @@ import ecommerce.dto.PaymentResponse
 import ecommerce.dto.PlaceOrderRequest
 import ecommerce.exception.OrderProcessingException
 import ecommerce.exception.StripePaymentException
+import ecommerce.model.Currency
 import ecommerce.model.Member
 import ecommerce.model.Order
 import ecommerce.model.OrderItem
@@ -138,7 +139,7 @@ class OrderService(
             Payment(
                 checkoutSessionId = paymentResponse.id,
                 amount = paymentResponse.amount,
-                currency = paymentResponse.currency,
+                currency = Currency.fromCode(paymentResponse.currency),
                 status = PaymentStatus.fromStripeStatus(paymentResponse.status),
                 paymentMethod = paymentResponse.paymentMethod,
             )
