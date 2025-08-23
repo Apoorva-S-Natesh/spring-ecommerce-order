@@ -25,14 +25,8 @@ class OrderController(private val orderService: OrderService) {
         @Valid @RequestBody placeOrderRequest: PlaceOrderRequest,
         user: AuthenticatedUser,
     ): ResponseEntity<Any> {
-        return try {
             val order = orderService.placeOrder(placeOrderRequest, user.userId)
-            ResponseEntity.ok(order)
-        } catch (e: OrderProcessingException) {
-            ResponseEntity.badRequest().body(ErrorResponse("BAD_REQUEST", e.message!!))
-        } catch (e: Exception) {
-            ResponseEntity.badRequest().body(ErrorResponse("BAD_REQUEST", e.message ?: "Unknown error"))
-        }
+            return ResponseEntity.ok(order)
     }
 
     @GetMapping("")
