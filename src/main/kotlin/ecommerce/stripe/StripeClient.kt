@@ -59,24 +59,22 @@ class StripeClient(
         body: String,
     ): PaymentResponse {
         try {
-            val resp =
+            val paymentIntent =
                 restClient.post()
                     .uri(url)
                     .header(HttpHeaders.AUTHORIZATION, "Bearer $stripeKey")
                     .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                     .body(body)
                     .retrieve()
-                    .toEntity(String::class.java)
-
-            val paymentIntent = mapper.readValue(resp.body, StripePaymentIntent::class.java)
+                    .body(StripePaymentIntent::class.java)
 
             return PaymentResponse(
-                id = paymentIntent.id,
-                amount = paymentIntent.amount,
-                status = paymentIntent.status,
-                paymentMethod = paymentIntent.payment_method,
-                currency = paymentIntent.currency,
-                declineCode = paymentIntent.last_payment_error?.decline_code,
+                id = paymentIntent?.id ?: "Invalid Payment",
+                amount = paymentIntent?.amount,
+                status = paymentIntent?.status,
+                paymentMethod = paymentIntent?.payment_method,
+                currency = paymentIntent?.currency ?: "USD",
+                declineCode = paymentIntent?.last_payment_error?.decline_code,
             )
         } catch (ex: RestClientResponseException) {
             val info = parseStripeError(ex.responseBodyAsString)
