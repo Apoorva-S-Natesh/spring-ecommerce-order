@@ -7,6 +7,7 @@ import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
 import jakarta.persistence.OneToMany
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
@@ -15,7 +16,8 @@ import java.time.LocalDateTime
 @Entity
 @Table(name = "carts")
 class Cart(
-    @OneToOne(mappedBy = "cart", fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "member_id")
     val member: Member? = null,
     @OneToMany(mappedBy = "cart", cascade = [CascadeType.ALL], fetch = FetchType.LAZY, orphanRemoval = true)
     val cartItem: MutableList<CartItem> = mutableListOf(),

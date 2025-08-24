@@ -103,12 +103,6 @@ class OrderService(
         quantity: Int,
     ): OrderResponse {
         validateMember(memberId)
-        val orderItem =
-            OrderItem(
-                quantity = quantity,
-                price = productOption.product.price,
-                productOption = productOption,
-            )
         val payment =
             Payment(
                 checkoutSessionId = paymentResponse.id,
@@ -124,6 +118,14 @@ class OrderService(
                 orderItems = mutableListOf(),
                 payment = payment,
             )
+        val orderItem =
+            OrderItem(
+                quantity = quantity,
+                price = productOption.product.price,
+                productOption = productOption,
+                order = order,
+            )
+        order.orderItems.add(orderItem)
         return orderToResponse(orderRepository.save(order))
     }
 
